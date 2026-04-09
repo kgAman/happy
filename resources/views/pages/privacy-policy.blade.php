@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Terms & Conditions | HappilyWeds')
+@section('title', 'Privacy Policy | HappilyWeds')
 
 @push('page-styles')
 <style>
@@ -240,9 +240,9 @@
 </div>
 
 <section class="vibrant-hero">
-    <div class="hero-badge"><i class="bi bi-shield-lock-fill"></i> HappilyWeds Legal</div>
-    <h1 class="font-playfair">Terms & Conditions</h1>
-    <p>The mutual agreements and foundational guidelines essential for fostering a serious, authentic, and respectful matrimonial community.</p>
+    <div class="hero-badge"><i class="bi bi-shield-check-fill"></i> Legal & Trust</div>
+    <h1 class="font-playfair">Privacy Policy</h1>
+    <p>A transparent look into how we protect, secure, and utilize your personal information to foster genuine matrimonial connections.</p>
 </section>
 
 <div class="vibrant-container">
@@ -250,142 +250,134 @@
         <aside class="glass-sidebar">
             <h3 class="sidebar-title">Directory</h3>
             <ul class="toc-nav">
-                <li><a href="#section-1"><i class="bi bi-person-badge"></i> Eligibility</a></li>
-                <li><a href="#section-2"><i class="bi bi-shield-check"></i> User Conduct</a></li>
-                <li><a href="#section-3"><i class="bi bi-x-circle"></i> Cancellation</a></li>
-                <li><a href="#section-4"><i class="bi bi-credit-card"></i> Refund Policy</a></li>
-                <li><a href="#section-5"><i class="bi bi-incognito"></i> Privacy & Content</a></li>
-                <li><a href="#section-6"><i class="bi bi-exclamation-triangle"></i> Liability</a></li>
+                <li><a href="#section-1"><i class="bi bi-database"></i> Data Collection</a></li>
+                <li><a href="#section-2"><i class="bi bi-gear"></i> Usage & Processing</a></li>
+                <li><a href="#section-3"><i class="bi bi-eye"></i> Visibility Rules</a></li>
+                <li><a href="#section-4"><i class="bi bi-shield-lock"></i> Security Architecture</a></li>
+                <li><a href="#section-5"><i class="bi bi-person-check"></i> Your Rights</a></li>
+                <li><a href="#section-6"><i class="bi bi-journal-text"></i> Policy Revisions</a></li>
             </ul>
         </aside>
 
         <div class="content-area">
+            
             <div class="glass-card" id="section-1" data-number="1">
-                <div class="card-header-icon"><i class="bi bi-person-badge"></i></div>
-                <h2 class="text-gradient-card">Eligibility & Registration</h2>
-                <p>To maintain a high-trust and secure community, users must meet the following strict criteria to register and access our services.</p>
+                <div class="card-header-icon"><i class="bi bi-database"></i></div>
+                <h2 class="text-gradient-card">Information We Collect</h2>
+                <p>To facilitate meaningful, lifelong connections and ensure a trusted environment, we collect highly specific information across four primary categories during your journey with HappilyWeds.</p>
                 <div class="clause-grid">
                     <div class="clause-item">
-                        <i class="bi bi-calendar-check clause-icon"></i>
-                        <h4>Minimum Age</h4>
-                        <p>You must be of legal marriageable age according to the laws of your jurisdiction (e.g., 18 for women, 21 for men).</p>
+                        <i class="bi bi-person-vcard clause-icon"></i>
+                        <h4>Identity Data</h4>
+                        <p>Includes your full legal name, gender, exact date of birth, and current marital status. This forms the absolute baseline of your public profile.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-people clause-icon"></i>
-                        <h4>Marital Status</h4>
-                        <p>You must be legally single, widowed, or legally divorced to create an account. Married individuals are prohibited.</p>
+                        <i class="bi bi-heart-pulse clause-icon"></i>
+                        <h4>Sensitive Filters</h4>
+                        <p>To provide accurate match-making, we securely collect details regarding religion, caste, mother tongue, physical attributes, and profession.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-fingerprint clause-icon"></i>
-                        <h4>Account Accuracy</h4>
-                        <p>Authentic information is mandatory. Providing "spoof" details is grounds for immediate termination.</p>
+                        <i class="bi bi-patch-check clause-icon"></i>
+                        <h4>Verification Proofs</h4>
+                        <p>For our "Verified Badge" program, we process Government IDs alongside your verified phone number and email in a secure, isolated vault.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-person-exclamation clause-icon"></i>
-                        <h4>One Account Rule</h4>
-                        <p>Only one profile per individual is permitted. Duplicate accounts will be identified and removed.</p>
+                        <i class="bi bi-cpu clause-icon"></i>
+                        <h4>Technical Logs</h4>
+                        <p>We automatically log your IP address, browser type, and session cookies to ensure platform stability, speed, and fraud prevention.</p>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card" id="section-2" data-number="2">
-                <div class="card-header-icon"><i class="bi bi-shield-check"></i></div>
-                <h2 class="text-gradient-card">User Conduct & Security</h2>
-                <p>By registering, you uphold the serious purpose of the platform, agreeing to interact with dignity, respect, and a commitment to personal safety.</p>
+                <div class="card-header-icon"><i class="bi bi-gear"></i></div>
+                <h2 class="text-gradient-card">Usage & Processing</h2>
+                <p>Your data is never collected passively. Every single data point serves a distinct purpose: to enhance your experience, refine your matches, and keep our community impenetrable to bad actors.</p>
                 <div class="clause-grid">
                     <div class="clause-item">
-                        <i class="bi bi-key clause-icon"></i>
-                        <h4>Keep Credentials Safe</h4>
-                        <p>You are solely responsible for maintaining the confidentiality of your login info.</p>
+                        <i class="bi bi-diagram-3 clause-icon"></i>
+                        <h4>Matchmaking Optimization</h4>
+                        <p>We utilize your preferences and attributes to power our intelligent algorithms, ensuring you see highly compatible profiles tailored to your life goals.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-chat-heart clause-icon"></i>
-                        <h4>Respectful Interaction</h4>
-                        <p>No harassment, obscene language, abuse, or unsolicited commercial advertisements (spam) are tolerated.</p>
+                        <i class="bi bi-shield-shaded clause-icon"></i>
+                        <h4>Fraud Detection</h4>
+                        <p>Behavioral data and technical logs are strictly analyzed by our automated security systems to identify and remove scammers and bots proactively.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-search clause-icon"></i>
-                        <h4>Personal Verification</h4>
-                        <p>Basic screenings are performed, but HappilyWeds does not guarantee member claims. Perform your own due diligence.</p>
+                        <i class="bi bi-chat-dots clause-icon"></i>
+                        <h4>Communication</h4>
+                        <p>Your contact data allows us to send critical account alerts, new match notifications, and securely route internal messages without exposing your personal phone number.</p>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card" id="section-3" data-number="3">
-                <div class="card-header-icon"><i class="bi bi-x-circle"></i></div>
-                <h2 class="text-gradient-card">Cancellation & Deletion</h2>
-                <p>We respect your sovereignty over your data, providing straightforward tools to deactivate or leave the community whenever you choose.</p>
+                <div class="card-header-icon"><i class="bi bi-eye"></i></div>
+                <h2 class="text-gradient-card">Visibility Rules</h2>
+                <p>You have absolute control over what the community sees. We provide granular settings to manage your digital footprint.</p>
                 <div class="clause-grid">
                     <div class="clause-item">
-                        <i class="bi bi-box-arrow-right clause-icon"></i>
-                        <h4>User-Initiated Deletion</h4>
-                        <p>You may deactivate or permanently delete your account at any time through Account Settings.</p>
+                        <i class="bi bi-globe clause-icon"></i>
+                        <h4>Public Profile</h4>
+                        <p>Basic information, approved photos, and general lifestyle choices are visible to other registered, active members of the platform.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-database clause-icon"></i>
-                        <h4>Data Retention</h4>
-                        <p>Upon deletion, your profile vanishes. Some data may be retained temporarily for legal compliance.</p>
-                    </div>
-                    <div class="clause-item">
-                        <i class="bi bi-exclamation-octagon clause-icon"></i>
-                        <h4>Termination by Us</h4>
-                        <p>We reserve the right to suspend or terminate accounts that violate these terms without prior notice.</p>
+                        <i class="bi bi-incognito clause-icon"></i>
+                        <h4>Masked Contact Details</h4>
+                        <p>Your phone number and email address are never displayed publicly. Members must use our secure in-app messaging to initiate contact.</p>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card" id="section-4" data-number="4">
-                <div class="card-header-icon"><i class="bi bi-credit-card"></i></div>
-                <h2 class="text-gradient-card">Refund Policy</h2>
-                <p>Transparent guidelines regarding premium subscriptions and financial transactions.</p>
+                <div class="card-header-icon"><i class="bi bi-shield-lock"></i></div>
+                <h2 class="text-gradient-card">Security Architecture</h2>
+                <p>We deploy military-grade security infrastructure to ensure your most sensitive personal information remains inaccessible to unauthorized parties.</p>
                 <div class="clause-grid">
                     <div class="clause-item">
-                        <i class="bi bi-wallet2 clause-icon"></i>
-                        <h4>Paid Memberships</h4>
-                        <p>Payments for premium subscriptions, profile upgrades, and digital boosts are non-refundable.</p>
+                        <i class="bi bi-file-lock clause-icon"></i>
+                        <h4>End-to-End Encryption</h4>
+                        <p>All data transmitted between your device and our servers is secured using advanced TLS protocols to prevent interception.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-arrow-counterclockwise clause-icon"></i>
-                        <h4>Exceptions</h4>
-                        <p>Refunds considered only in cases of technical double-billing or if required by law.</p>
-                    </div>
-                    <div class="clause-item">
-                        <i class="bi bi-hourglass-split clause-icon"></i>
-                        <h4>Pro-rated Refunds</h4>
-                        <p>No pro-rated refunds are offered if you find a partner before your subscription ends.</p>
+                        <i class="bi bi-hdd-network clause-icon"></i>
+                        <h4>Isolated Storage</h4>
+                        <p>Sensitive documents, such as Government Verification IDs, are stored on heavily restricted servers separate from regular database traffic.</p>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card" id="section-5" data-number="5">
-                <div class="card-header-icon"><i class="bi bi-incognito"></i></div>
-                <h2 class="text-gradient-card">Privacy & Content</h2>
-                <p>Your ownership rights over media and our limited license to operate the platform.</p>
+                <div class="card-header-icon"><i class="bi bi-person-check"></i></div>
+                <h2 class="text-gradient-card">Your Rights</h2>
+                <p>We respect your ownership over your personal data. HappilyWeds provides streamlined processes for you to exercise your privacy rights.</p>
                 <div class="clause-grid">
                     <div class="clause-item">
-                        <i class="bi bi-images clause-icon"></i>
-                        <h4>Content Ownership</h4>
-                        <p>You retain ownership of photos/text but grant us a license to display them to other members.</p>
+                        <i class="bi bi-cloud-download clause-icon"></i>
+                        <h4>Right to Access</h4>
+                        <p>You may request a comprehensive export of all personal data we hold associated with your account at any time.</p>
                     </div>
                     <div class="clause-item">
-                        <i class="bi bi-shield-lock clause-icon"></i>
-                        <h4>Privacy Governance</h4>
-                        <p>Usage is strictly governed by our Privacy Policy, detailing how we protect your sensitive data.</p>
+                        <i class="bi bi-eraser clause-icon"></i>
+                        <h4>Right to Erasure</h4>
+                        <p>Upon profile deletion, your data is permanently scrubbed from our active databases, subject only to strict legal retention mandates.</p>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card" id="section-6" data-number="6">
-                <div class="card-header-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                <h2 class="text-gradient-card">Limitation of Liability</h2>
+                <div class="card-header-icon"><i class="bi bi-journal-text"></i></div>
+                <h2 class="text-gradient-card">Policy Revisions</h2>
                 <div class="clause-grid">
                     <div class="clause-item clause-highlight" style="grid-column: 1 / -1;">
-                        <i class="bi bi-info-circle clause-icon" style="color: var(--brand-pink); background: #ffffff;"></i>
-                        <h4>Facilitator Disclaimer</h4>
-                        <p style="font-size: 1.1rem; color: #ffffff;">HappilyWeds is a platform solely for introduction. We are not liable for damages or emotional distress resulting from interactions with other members.</p>
+                        <i class="bi bi-bell clause-icon" style="color: var(--brand-pink); background: #ffffff;"></i>
+                        <h4>Notification of Changes</h4>
+                        <p style="font-size: 1.1rem; color: #ffffff;">We regularly review and update our privacy practices to adapt to new technologies and legal requirements. If substantial changes are made to how we handle your data, we will notify you prominently via email and in-app alerts prior to the changes taking effect.</p>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

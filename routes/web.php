@@ -22,6 +22,12 @@ use Illuminate\Support\Facades\Auth;
 Auth::routes([
     'verify' => true,
 ]);
+Route::get('/privacy-policy', function () {
+    return view('pages.privacy-policy'); 
+});
+Route::get('/terms-of-service', function () {
+    return view('pages.terms');
+});
 Route::get('admin-otp', [LoginController::class, 'showOtpForm'])->name('otp.form');
 Route::post('admin-otp', [LoginController::class, 'verifyOtp'])->name('otp.verify');
 

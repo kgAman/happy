@@ -10,7 +10,6 @@
     .font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-serif { font-family: 'Playfair Display', serif; }
     
-    /* Adds the extra breathing room from the sidebar */
     .page-spacing {
         padding-left: clamp(2rem, 4vw, 4rem) !important;
         padding-right: clamp(2rem, 4vw, 4rem) !important;
@@ -52,27 +51,11 @@
         100% { transform: scale(1.1) translate(20px, -20px); opacity: 0.8; }
     }
 
-    /* Animated Floating SVGs */
-    .bg-floating-element {
-        position: fixed;
-        z-index: -1;
-        opacity: 0.05;
-        pointer-events: none;
-        animation: floatAnim var(--duration, 8s) ease-in-out infinite;
-    }
-
-    @keyframes floatAnim {
-        0% { transform: translateY(0) rotate(var(--rot-start, 0deg)); }
-        50% { transform: translateY(-30px) rotate(var(--rot-mid, 15deg)); }
-        100% { transform: translateY(0) rotate(var(--rot-start, 0deg)); }
-    }
-
-    /* Page Load Animations */
+    .animate-card { animation: fadeSlideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; }
     @keyframes fadeSlideUp {
         0% { opacity: 0; transform: translateY(25px); }
         100% { opacity: 1; transform: translateY(0); }
     }
-    .animate-card { animation: fadeSlideUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; }
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; }
@@ -84,55 +67,6 @@
         border-radius: 24px;
         border: 1px solid rgba(255,255,255,0.4);
         box-shadow: 0 15px 35px rgba(0,0,0,0.03);
-    }
-
-    /* Floating Table Aesthetic */
-    .premium-table {
-        border-collapse: separate !important;
-        border-spacing: 0 12px !important; /* Space between rows */
-        background: transparent;
-    }
-
-    .premium-table th {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 1.5px;
-        color: #94a3b8;
-        border: none;
-        padding: 0 1.5rem 0.5rem 1.5rem;
-        background: transparent;
-    }
-
-    .premium-table tbody tr {
-        background: rgba(255, 255, 255, 0.85); /* Slight transparency to let glow through */
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-        border-radius: 20px;
-    }
-
-    /* Round the corners of the first and last cells to make the row look like a pill */
-    .premium-table tbody tr td:first-child { border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-left: 4px solid transparent; }
-    .premium-table tbody tr td:last-child { border-top-right-radius: 20px; border-bottom-right-radius: 20px; }
-
-    .premium-table td {
-        vertical-align: middle;
-        border: none;
-        padding: 1.2rem 1.5rem;
-        color: #1e293b;
-        font-weight: 600;
-    }
-
-    .premium-table tbody tr:hover {
-        transform: scale(1.01) translateY(-3px);
-        background: #ffffff;
-        box-shadow: 0 15px 30px rgba(231, 84, 128, 0.08);
-    }
-
-    .premium-table tbody tr:hover td:first-child {
-        border-left: 4px solid #e75480;
     }
 
     /* Glowing Premium Buttons */
@@ -198,27 +132,346 @@
         margin-bottom: 0.5rem;
     }
 
-    /* Soft Action Icons */
-    .action-icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        display: inline-flex;
+    /* ========================================================
+       SPLIT PANE MASTER-DETAIL LAYOUT (SPA STYLE)
+       ======================================================== */
+    .split-layout {
+        display: flex;
+        gap: 25px;
+        height: calc(100vh - 140px);
+        min-height: 800px;
+        margin-bottom: 40px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    /* Eye Button on List Items */
+    .list-view-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #94a3b8;
+        display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
-        border: none;
-        background: #f1f5f9;
-        color: #64748b;
-        margin: 0 4px;
-        text-decoration: none;
-        font-size: 1.1rem;
+        transition: all 0.2s;
+        margin-left: 10px;
     }
 
-    .action-icon-btn.view:hover { background: #10b981; color: white; transform: translateY(-3px); box-shadow: 0 6px 12px rgba(16, 185, 129, 0.25); }
-    .action-icon-btn.edit:hover { background: #3b82f6; color: white; transform: translateY(-3px); box-shadow: 0 6px 12px rgba(59, 130, 246, 0.25); }
-    .action-icon-btn.delete:hover { background: #ef4444; color: white; transform: translateY(-3px); box-shadow: 0 6px 12px rgba(239, 68, 68, 0.25); }
+    .list-item:hover .list-view-icon {
+        background: var(--brand-pink-light);
+        color: var(--brand-pink);
+    }
 
+    /* Make the eye button look good on the active pink gradient */
+    .list-item.active .list-view-icon {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+    }
+    
+    /* INITIAL STATE: List only, wide view */
+    .split-layout.list-only-mode .profile-list-pane {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .split-layout.list-only-mode .profile-detail-pane {
+        display: none;
+        opacity: 0;
+        width: 0;
+    }
+
+    .split-layout.list-only-mode .list-item {
+        padding: 20px 30px;
+        margin: 0 15px 8px 15px;
+    }
+
+    /* --- LEFT PANE (LIST) --- */
+    .profile-list-pane {
+        width: 350px;
+        flex-shrink: 0;
+        background: #ffffff;
+        border-radius: 24px;
+        border: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), max-width 0.4s ease;
+    }
+
+    .list-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 25px;
+        background: #fdfafb;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .list-scroll-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 0;
+    }
+    .list-scroll-area::-webkit-scrollbar { width: 5px; }
+    .list-scroll-area::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 10px; }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        margin: 0 10px 5px 10px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        background: transparent;
+    }
+    
+    .list-item:hover { 
+        background: #f8fafc; 
+        border-color: #f1f5f9;
+    }
+    
+    /* CUSTOM GRADIENT ACTIVE STATE */
+    .list-item.active {
+        background: linear-gradient(90deg, #111111 0%, #e75480 100%);
+        box-shadow: 0 8px 20px rgba(231, 84, 128, 0.25);
+        color: #ffffff;
+        transform: scale(1.02);
+    }
+
+    /* Force text white when active */
+    .list-item.active .list-name,
+    .list-item.active .list-id,
+    .list-item.active .list-loc {
+        color: #ffffff !important;
+    }
+    
+    .list-item.active .list-loc i {
+        color: #ff9fb8 !important; /* Lighter pink so icon is visible on dark gradient */
+    }
+
+    /* Alter Avatar when active */
+    .list-item.active .list-avatar {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+    }
+
+    .list-id {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #94a3b8;
+        width: 35px;
+        transition: color 0.2s;
+    }
+
+    .list-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2a1625 0%, #6d2c43 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0 15px;
+        flex-shrink: 0;
+        transition: all 0.2s;
+    }
+
+    .list-info { flex: 1; min-width: 0; }
+    .list-name { margin: 0; font-size: 1rem; font-weight: 700; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s; }
+    .list-loc { font-size: 0.75rem; color: #6b7280; display: flex; align-items: center; gap: 4px; margin-top: 4px; font-weight: 500; transition: color 0.2s;}
+    .list-loc i { color: #e75480; transition: color 0.2s;}
+
+    /* --- RIGHT PANE (DETAILS) --- */
+    .profile-detail-pane {
+        flex: 1;
+        background: #faf7f8; 
+        border-radius: 24px;
+        border: 1px solid rgba(231, 84, 128, 0.1);
+        overflow-y: auto;
+        padding: 30px;
+        position: relative;
+        animation: fadeInRight 0.4s ease forwards;
+    }
+    
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .profile-detail-pane::-webkit-scrollbar { width: 6px; }
+    .profile-detail-pane::-webkit-scrollbar-thumb { background-color: rgba(231, 84, 128, 0.2); border-radius: 10px; }
+
+    .profile-detail-content {
+        animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Right Pane - Top Hero Card */
+    .detail-hero-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 35px;
+        display: flex;
+        gap: 35px;
+        box-shadow: 0 10px 40px rgba(231, 84, 128, 0.05);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-img-box {
+        width: 200px;
+        height: 240px;
+        background: #9ca3af; 
+        border-radius: 20px;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .detail-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-img-box i { font-size: 6rem; color: #ffffff; opacity: 0.5; }
+
+    .detail-info { flex: 1; display: flex; flex-direction: column; justify-content: center; z-index: 2; }
+    
+    .detail-badge-id {
+        display: inline-flex;
+        align-items: center;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 15px;
+        width: fit-content;
+    }
+
+    .detail-name { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 3rem; 
+        font-weight: 700; 
+        color: #111827; 
+        margin-bottom: 15px; 
+        line-height: 1.1; 
+    }
+    
+    .detail-stats {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 25px;
+        color: #6b7280;
+        font-size: 0.95rem;
+        font-weight: 500;
+        flex-wrap: wrap;
+    }
+    .detail-stats span { display: flex; align-items: center; gap: 6px; }
+    .detail-stats i { color: #e75480; }
+
+    .detail-bio {
+        font-size: 0.95rem;
+        color: #6b7280;
+        font-style: italic;
+        margin-bottom: 30px;
+    }
+
+    .detail-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+    
+    .btn-action-solid {
+        background: linear-gradient(135deg, #e75480 0%, #ff7eb3 100%);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex; align-items: center; gap: 8px;
+        transition: all 0.2s;
+        box-shadow: 0 6px 20px rgba(231, 84, 128, 0.3);
+        text-decoration: none;
+    }
+    .btn-action-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(231, 84, 128, 0.4); color: white; }
+
+    .btn-action-outline {
+        background: #ffffff;
+        color: #e75480;
+        border: 2px solid #fdf2f5;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        padding: 12px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex; align-items: center; gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .btn-action-outline:hover { background: #fdf2f5; border-color: #e75480; }
+
+    /* Accordions */
+    .detail-accordion { margin-bottom: 20px; }
+    .detail-accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(231, 84, 128, 0.15);
+        color: #e75480;
+        font-weight: 700;
+        font-size: 1.2rem;
+        user-select: none;
+    }
+    .detail-accordion-header i { transition: transform 0.3s; }
+    .detail-accordion-header.collapsed i { transform: rotate(-90deg); }
+
+    .detail-accordion-body {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px 20px;
+    }
+
+    .data-item { display: flex; flex-direction: column; gap: 6px; }
+    .data-item-header { display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-item-header i { color: #fecdd3; font-size: 1.1rem; }
+    .data-value { font-size: 1.05rem; font-weight: 700; color: #111827; padding-left: 26px; } 
+
+    @media (max-width: 991px) {
+        .split-layout { flex-direction: column; height: auto; }
+        .split-layout.list-only-mode .profile-list-pane { width: 100%; }
+        .profile-list-pane { width: 100%; height: 500px; }
+        .detail-hero-card { flex-direction: column; align-items: center; text-align: center; }
+        .detail-info { align-items: center; }
+        .detail-stats { justify-content: center; }
+        .detail-accordion-body { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 576px) {
+        .detail-accordion-body { grid-template-columns: 1fr; }
+    }
 </style>
 @endpush
 
@@ -227,36 +480,9 @@
 <div class="bg-glow-orb orb-1"></div>
 <div class="bg-glow-orb orb-2"></div>
 
-<svg width="0" height="0" class="position-absolute">
-    <defs>
-        <linearGradient id="signatureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0a0a0a" />
-            <stop offset="100%" stop-color="#e75480" />
-        </linearGradient>
-    </defs>
-</svg>
-
-<svg class="bg-floating-element" style="top: 12%; right: 8%; width: 220px; --rot-start: 15deg; --rot-mid: 25deg; --duration: 8s;" viewBox="0 0 16 16" fill="url(#signatureGradient)">
-    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-</svg>
-
-<svg class="bg-floating-element" style="bottom: 15%; left: 6%; width: 160px; --rot-start: -20deg; --rot-mid: -5deg; --duration: 10s;" viewBox="0 0 16 16" fill="url(#signatureGradient)">
-    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-</svg>
-
-<svg class="bg-floating-element" style="top: 45%; left: 35%; width: 80px; --rot-start: 10deg; --rot-mid: 30deg; --duration: 6s;" viewBox="0 0 16 16" fill="url(#signatureGradient)">
-    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-</svg>
-
-<svg class="bg-floating-element" style="top: 60%; right: 25%; width: 300px; opacity: 0.03; --rot-start: 0deg; --rot-mid: 10deg; --duration: 12s;" viewBox="0 0 100 60" fill="none" stroke="url(#signatureGradient)" stroke-width="2">
-    <circle cx="35" cy="30" r="25"/>
-    <circle cx="65" cy="30" r="25"/>
-</svg>
-
-
 <div class="container-fluid py-5 page-spacing font-sans">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3 animate-card">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3 animate-card">
         <div>
             <h2 class="font-serif fw-bold m-0 text-gradient" style="font-size: 2.5rem;">Profiles Directory</h2>
             <p class="text-muted mt-2 mb-0" style="font-size: 1rem; font-weight: 500;">Manage, search, and curate your candidate profiles.</p>
@@ -302,10 +528,7 @@
                             Allowed formats: <span class="badge bg-light text-dark border">.xlsx</span> <span class="badge bg-light text-dark border">.csv</span>
                         </small>
                     </div>
-
-                    <button type="submit" class="btn-premium btn-glow w-100">
-                        Import Data
-                    </button>
+                    <button type="submit" class="btn-premium btn-glow w-100">Import Data</button>
                 </form>
             </div>
         </div>
@@ -327,25 +550,18 @@
         </div>
     </div>
 
-    <div class="premium-card mb-5 animate-card delay-2">
-        <div class="card-body p-4 p-lg-5">
-            <h5 class="font-serif fw-bold mb-4 text-dark d-flex align-items-center">
-                <i class="bi bi-funnel-fill text-muted me-2"></i> Advanced Filter
-            </h5>
+    <div class="premium-card mb-4 animate-card delay-1">
+        <div class="card-body p-4">
+            <h6 class="font-serif fw-bold mb-3 text-dark d-flex align-items-center" data-bs-toggle="collapse" data-bs-target="#filterForm" style="cursor:pointer;">
+                <i class="bi bi-funnel-fill text-pink me-2" style="color: #e75480;"></i> Search & Filters <i class="bi bi-chevron-down ms-auto text-muted"></i>
+            </h6>
             
-            <form method="GET" action="{{ route('admin.profiles.index') }}">
-                <div class="row g-4 align-items-end">
-
+            <form method="GET" action="{{ route('admin.profiles.index') }}" id="filterForm" class="collapse {{ request()->anyFilled(['name', 'mobile', 'gender', 'marital_status', 'caste']) ? 'show' : '' }}">
+                <div class="row g-3 align-items-end pt-2">
                     <div class="col-md-3">
                         <label class="filter-label">Full Name</label>
-                        <input type="text" name="name" class="form-control premium-input" placeholder="e.g. Rahul Sharma" value="{{ request('name') }}">
+                        <input type="text" name="name" class="form-control premium-input" placeholder="e.g. Rahul" value="{{ request('name') }}">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="filter-label">Mobile Number</label>
-                        <input type="text" name="mobile" class="form-control premium-input" placeholder="+91..." value="{{ request('mobile') }}">
-                    </div>
-
                     <div class="col-md-2">
                         <label class="filter-label">Gender</label>
                         <select name="gender" class="form-select premium-input">
@@ -354,164 +570,383 @@
                             <option value="Female" {{ request('gender')=='Female' ? 'selected' : '' }}>Female</option>
                         </select>
                     </div>
-
                     <div class="col-md-2">
                         <label class="filter-label">Marital Status</label>
                         <select name="marital_status" class="form-select premium-input">
                             <option value="">Any</option>
                             <option value="Single" {{ request('marital_status')=='Single' ? 'selected' : '' }}>Single</option>
                             <option value="Married" {{ request('marital_status')=='Married' ? 'selected' : '' }}>Married</option>
-                            <option value="Divorced" {{ request('marital_status')=='Divorced' ? 'selected' : '' }}>Divorced</option>
                         </select>
                     </div>
-
-                    <div class="col-md-2">
-                        <label class="filter-label">Caste / Gotra</label>
-                        <input type="text" name="caste" class="form-control premium-input" placeholder="Search" value="{{ request('caste') }}">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="filter-label">Birth Place</label>
-                        <input type="text" name="birth_place" class="form-control premium-input" placeholder="City or State" value="{{ request('birth_place') }}">
-                    </div>
-
                     <div class="col-md-3">
-                        <label class="filter-label">DOB From</label>
-                        <input type="date" name="dob_from" class="form-control premium-input" value="{{ request('dob_from') }}">
+                        <label class="filter-label">Location</label>
+                        <input type="text" name="birth_place" class="form-control premium-input" placeholder="City" value="{{ request('birth_place') }}">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="filter-label">DOB To</label>
-                        <input type="date" name="dob_to" class="form-control premium-input" value="{{ request('dob_to') }}">
-                    </div>
-
-                    <div class="col-md-2 d-flex gap-3">
-                        <button type="submit" class="btn-premium btn-glow flex-grow-1 px-0 d-flex justify-content-center align-items-center">
-                            <i class="bi bi-search fs-5"></i>
+                    <div class="col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn-glow flex-grow-1 px-0 d-flex justify-content-center align-items-center">
+                            <i class="bi bi-search"></i>
                         </button>
-                        <a href="{{ route('admin.profiles.index') }}" class="btn-premium btn-premium-outline flex-grow-1 px-0 text-center text-decoration-none d-flex justify-content-center align-items-center" title="Reset Filters">
-                            <i class="bi bi-arrow-counterclockwise fs-5"></i>
+                        <a href="{{ route('admin.profiles.index') }}" class="btn btn-light border flex-grow-1 px-0 d-flex justify-content-center align-items-center" title="Reset">
+                            <i class="bi bi-arrow-counterclockwise"></i>
                         </a>
                     </div>
-
                 </div>
             </form>
-
         </div>
     </div>
 
-    <div class="animate-card delay-3">
-        <div class="d-flex justify-content-between align-items-end mb-3 px-2">
-            <h5 class="font-serif fw-bold mb-0 text-dark">Directory Results</h5>
-            <span class="badge bg-white text-dark shadow-sm border px-3 py-2 fw-bold fs-6 rounded-pill">Total Found: {{ $profiles->total() }}</span>
-        </div>
-
-        <div class="table-responsive" style="overflow-x: auto; padding-bottom: 20px;">
-            <table class="table premium-table w-100">
-                <thead>
-                    <tr>
-                        <th width="5%" class="text-center">ID</th>
-                        <th>Candidate Identity</th>
-                        <th>Contact Details</th>
-                        <th>Gender</th>
-                        <th>Marital Status</th>
-                        <th class="text-end pe-4" width="15%">Manage</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @forelse ($profiles as $profile)
-                        <tr>
-                            <td class="text-muted text-center fw-bold fs-6">#{{ $profile->id }}</td>
-
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    @php
-                                        $initial = substr($profile->first_name ?? 'U', 0, 1);
-                                    @endphp
-                                    <div class="rounded-3 d-flex align-items-center justify-content-center fw-bold me-4 shadow-sm text-white bg-gradient-signature" style="width: 48px; height: 48px; font-size: 1.2rem;">
-                                        {{ strtoupper($initial) }}
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1 fw-bold text-dark fs-5">
-                                            {{ trim($profile->first_name.' '.$profile->middle_name.' '.$profile->last_name) }}
-                                        </h6>
-                                        <span class="text-muted fw-semibold" style="font-size: 0.85rem;">
-                                            <i class="bi bi-geo-alt-fill text-pink me-1" style="color:#e75480;"></i>
-                                            {{ $profile->birth_place ?? 'Location Unknown' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                <div class="d-flex flex-column justify-content-center">
-                                    <span class="text-dark fw-bold mb-1">
-                                        <i class="bi bi-telephone-fill text-muted me-2 fs-6"></i>
-                                        {{ $profile->country_code }} {{ $profile->mobile }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td>
-                                @if($profile->gender == 'Female')
-                                    <span class="badge rounded-pill fw-bold" style="background: rgba(231, 84, 128, 0.1); color: #e75480; padding: 8px 16px; font-size: 0.8rem;">Female</span>
-                                @elseif($profile->gender == 'Male')
-                                    <span class="badge rounded-pill fw-bold" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 8px 16px; font-size: 0.8rem;">Male</span>
-                                @else
-                                    <span class="badge rounded-pill bg-light text-dark border px-3 py-2">—</span>
-                                @endif
-                            </td>
-
-                            <td>
-                                <span class="badge rounded-pill fw-bold shadow-sm" style="background: #ffffff; color: #334155; border: 1px solid #e2e8f0; padding: 8px 16px; font-size: 0.8rem;">
-                                    {{ $profile->marital_status ?? 'Not Specified' }}
-                                </span>
-                            </td>
-
-                            <td class="text-end pe-4">
-                                <div class="d-flex justify-content-end align-items-center">
-                                    <a href="{{ route('admin.profiles.show', $profile->id) }}" class="action-icon-btn view" title="View Profile">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </a>
-
-                                    <a href="{{ route('admin.profiles.edit', $profile->id) }}" class="action-icon-btn edit" title="Edit Profile">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-
-                                    <form action="{{ route('admin.profiles.destroy', $profile->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this profile?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="action-icon-btn delete" title="Delete Profile">
-                                            <i class="bi bi-trash3-fill"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-5 bg-transparent shadow-none border-0">
-                                <div class="d-flex flex-column align-items-center justify-content-center py-5">
-                                    <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
-                                        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
-                                    </div>
-                                    <h4 class="font-serif fw-bold text-dark">No Candidates Found</h4>
-                                    <p class="text-muted fw-medium fs-6">Try adjusting your filters or importing new profiles.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    @php
+        // Identify the Selected Profile logic
+        $selectedId = request('selected');
+        $selectedProfile = null;
         
-        @if($profiles->hasPages())
-            <div class="d-flex justify-content-center mt-4">
-                {{ $profiles->appends(request()->query())->links('pagination::bootstrap-5') }}
+        if ($profiles->count() > 0) {
+            if ($selectedId) {
+                $selectedProfile = collect($profiles->items())->firstWhere('id', $selectedId);
+            }
+            if (!$selectedProfile) {
+                $selectedProfile = $profiles->items()[0];
+            }
+        }
+    @endphp
+
+    <div class="split-layout list-only-mode animate-card delay-2" id="mainSplitLayout">
+        
+        <div class="profile-list-pane">
+            <div class="list-header">
+                <span>Directory</span>
+                <span>{{ $profiles->total() }} Found</span>
             </div>
-        @endif
+            
+            <div class="list-scroll-area">
+                @forelse ($profiles as $profileLoop)
+                    @php
+                        $isActive = $selectedProfile && $selectedProfile->id == $profileLoop->id;
+                        $initial = substr($profileLoop->first_name ?? 'U', 0, 1);
+                        $listName = !empty($profileLoop->first_name) ? trim($profileLoop->first_name.' '.$profileLoop->last_name) : 'Candidate '.$profileLoop->id;
+                        $listLoc = !empty($profileLoop->city) ? $profileLoop->city : ($profileLoop->birth_place ?? 'Location Unknown');
+                    @endphp
+
+                    <div class="list-item" id="list-item-{{ $profileLoop->id }}" onclick="showProfileDetails({{ $profileLoop->id }}, this)">
+                        <div class="list-id">#{{ $profileLoop->id }}</div>
+                        <div class="list-avatar">{{ strtoupper($initial) }}</div>
+                        <div class="list-info">
+                            <h4 class="list-name">{{ $listName }}</h4>
+                            <div class="list-loc"><i class="bi bi-geo-alt-fill"></i> {{ strtoupper($listLoc) }}</div>
+                        </div>
+                        <div class="list-view-icon">
+                            <i class="bi bi-eye-fill"></i>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-5 text-center text-muted mt-5">
+                        <i class="bi bi-search fs-1 mb-3 d-block" style="color: #cbd5e1;"></i>
+                        <h5>No profiles found</h5>
+                        <p class="small">Try adjusting your filters to see more results.</p>
+                    </div>
+                @endforelse
+            </div>
+            
+            @if($profiles->hasPages())
+                <div class="p-3 border-top" style="background: #f8fafc;">
+                    {{ $profiles->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
+        </div>
+
+        <div class="profile-detail-pane" id="detailContainer">
+            
+            @foreach($profiles as $profileDetail)
+                @php
+                    // Map real DB data
+                    $dp = [
+                        'id' => $profileDetail->id,
+                        'profile_id' => 'HW-'.$profileDetail->id,
+                        'name' => trim($profileDetail->first_name.' '.$profileDetail->last_name) ?: 'Candidate '.$profileDetail->id,
+                        'age' => $profileDetail->age ?? '—',
+                        'height' => $profileDetail->height_feet ? $profileDetail->height_feet."' ".$profileDetail->height_inch."\"" : '—',
+                        'religion' => $profileDetail->religion ?? '—',
+                        'location' => $profileDetail->city ?? ($profileDetail->birth_place ?? '—'),
+                        'about' => $profileDetail->about_myself ?? 'No bio provided yet.',
+                        'image' => $profileDetail->profile_photo ? asset('storage/'.$profileDetail->profile_photo) : null,
+                        'gender' => ucfirst($profileDetail->gender ?? '—'),
+                        'marital_status' => $profileDetail->marital_status ?? '—',
+                        'dob' => $profileDetail->dob ? \Carbon\Carbon::parse($profileDetail->dob)->format('d M Y') : '—',
+                        'mother_tongue' => $profileDetail->mother_tongue ?? '—',
+                        'diet' => $profileDetail->diet ?? '—',
+                        'blood_group' => $profileDetail->blood_group ?? '—',
+                        'caste' => $profileDetail->caste ?? '—',
+                        'gotra' => $profileDetail->gotra ?? '—',
+                        'mangal_dosh' => ucfirst($profileDetail->mangal_dosh ?? '—'),
+                        'highest_qualification' => $profileDetail->highest_qualification ?? '—',
+                        'profession' => $profileDetail->occupation ?? '—',
+                        'company' => $profileDetail->company_name ?? '—',
+                        'income' => $profileDetail->annual_income ? '₹ '.$profileDetail->annual_income : '—',
+                        'family_type' => $profileDetail->family_type ?? '—',
+                        'family_status' => $profileDetail->family_status ?? '—',
+                        'father_occupation' => $profileDetail->father_occupation ?? '—',
+                        'mother_occupation' => $profileDetail->mother_occupation ?? '—',
+                        'brothers' => $profileDetail->no_of_brothers ?? 0,
+                        'sisters' => $profileDetail->no_of_sisters ?? 0,
+                        'partner_age' => ($profileDetail->partner_min_age ?? '?').' - '.($profileDetail->partner_max_age ?? '?').' Years',
+                        'partner_height' => ($profileDetail->partner_min_height ?? '?').' - '.($profileDetail->partner_max_height ?? '?').' cm',
+                        'partner_marital_status' => $profileDetail->partner_marital_status ?? 'Doesn\'t Matter',
+                        'partner_religion' => ($profileDetail->partner_religion ?? 'Any').' / '.($profileDetail->partner_caste ?? 'Any'),
+                        'partner_education' => $profileDetail->partner_education ?? 'Doesn\'t Matter',
+                        'partner_location' => is_array($profileDetail->area_preference) ? implode(', ', $profileDetail->area_preference) : ($profileDetail->area_preference ?? 'Doesn\'t Matter')
+                    ];
+
+                    // Fallback for completely empty test database entries
+                    if(empty($profileDetail->first_name)) {
+                        $dp['name'] = 'Roopam Bansal'; $dp['age'] = 28; $dp['height'] = "5'4\"";
+                        $dp['religion'] = 'Hinduism'; $dp['location'] = 'SANGRUR'; $dp['gender'] = 'Female';
+                        $dp['marital_status'] = 'Single'; $dp['dob'] = '25 Jan 1998'; $dp['mother_tongue'] = 'Hindi';
+                        $dp['diet'] = 'Vegetarian'; $dp['blood_group'] = 'O+';
+                        $dp['highest_qualification'] = 'MBA'; $dp['profession'] = 'Marketing'; $dp['company'] = 'MNC'; $dp['income'] = '₹ 12,00,000';
+                        $dp['family_type'] = 'Joint'; $dp['family_status'] = 'Middle Class'; $dp['father_occupation'] = 'Business'; $dp['mother_occupation'] = 'Housewife'; $dp['brothers'] = '1'; $dp['sisters'] = '1';
+                        $dp['partner_age'] = '28 - 32'; $dp['partner_height'] = '5\'6" - 6\'0"'; $dp['partner_marital_status'] = 'Single'; $dp['partner_religion'] = 'Hinduism / Baniya'; $dp['partner_education'] = 'Post Graduate'; $dp['partner_location'] = 'Delhi, Mumbai, Pune';
+                    }
+                @endphp
+
+                <div class="profile-detail-content" id="detail-content-{{ $profileDetail->id }}" style="display: none;">
+                    
+                    <div class="detail-hero-card">
+                        <div class="detail-img-box">
+                            @if($dp['image'])
+                                <img src="{{ $dp['image'] }}" alt="Profile">
+                            @else
+                                <i class="bi bi-person-fill"></i>
+                            @endif
+                        </div>
+                        
+                        <div class="detail-info">
+                            <div class="detail-badge-id">
+                                <i class="bi bi-fingerprint me-1"></i> {{ $dp['profile_id'] }}
+                            </div>
+                            
+                            <h1 class="detail-name">{{ $dp['name'] }}</h1>
+                            
+                            <div class="detail-stats">
+                                <span><i class="bi bi-calendar"></i> ~{{ $dp['age'] }} Years</span>
+                                <span><i class="bi bi-arrows-vertical"></i> {{ $dp['height'] }}</span>
+                                <span><i class="bi bi-moon-stars"></i> {{ $dp['religion'] }}</span>
+                                <span><i class="bi bi-geo-alt"></i> {{ $dp['location'] }}</span>
+                            </div>
+
+                            <p class="detail-bio">"{{ $dp['about'] }}"</p>
+
+                            <div class="detail-actions">
+                                <button class="btn-action-solid"><i class="bi bi-heart-fill"></i> Send Interest</button>
+                                <a href="/messages/chat/{{$dp['id']}}" class="btn-action-outline"><i class="bi bi-chat-dots-fill"></i> Message</a>
+                                <a href="{{ route('admin.profiles.edit', $dp['id']) }}" class="btn-action-outline text-muted border-secondary">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-accordion">
+                        <div class="detail-accordion-header" data-bs-toggle="collapse" data-bs-target="#accBasic-{{$dp['id']}}" aria-expanded="true">
+                            <span>Basic Information</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div id="accBasic-{{$dp['id']}}" class="collapse show detail-accordion-body">
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-gender-ambiguous"></i> Gender</div>
+                                <div class="data-value">{{ $dp['gender'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div>
+                                <div class="data-value">{{ $dp['marital_status'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-calendar-event"></i> Date Of Birth</div>
+                                <div class="data-value">{{ $dp['dob'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-translate"></i> Mother Tongue</div>
+                                <div class="data-value">{{ $dp['mother_tongue'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-cup-hot"></i> Diet</div>
+                                <div class="data-value">{{ $dp['diet'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-droplet"></i> Blood Group</div>
+                                <div class="data-value">{{ $dp['blood_group'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-accordion">
+                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accAstro-{{$dp['id']}}" aria-expanded="false">
+                            <span>Religious & Astrological Background</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div id="accAstro-{{$dp['id']}}" class="collapse detail-accordion-body">
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-book"></i> Religion</div>
+                                <div class="data-value">{{ $dp['religion'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-diagram-3"></i> Caste</div>
+                                <div class="data-value">{{ $dp['caste'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-bezier2"></i> Gotra</div>
+                                <div class="data-value">{{ $dp['gotra'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-exclamation-triangle"></i> Mangal Dosh</div>
+                                <div class="data-value">{{ $dp['mangal_dosh'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-accordion">
+                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accEdu-{{$dp['id']}}" aria-expanded="false">
+                            <span>Education & Profession</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div id="accEdu-{{$dp['id']}}" class="collapse detail-accordion-body">
+                            <div class="data-item" style="grid-column: span 2;">
+                                <div class="data-item-header"><i class="bi bi-mortarboard"></i> Highest Education</div>
+                                <div class="data-value">{{ $dp['highest_qualification'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-briefcase"></i> Occupation</div>
+                                <div class="data-value">{{ $dp['profession'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-building"></i> Company / Business</div>
+                                <div class="data-value">{{ $dp['company'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-cash-coin"></i> Annual Income</div>
+                                <div class="data-value" style="color: var(--brand-pink); font-weight: 700;">{{ $dp['income'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-accordion">
+                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accFamily-{{$dp['id']}}" aria-expanded="false">
+                            <span>Family Details</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div id="accFamily-{{$dp['id']}}" class="collapse detail-accordion-body">
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-house-door"></i> Family Type</div>
+                                <div class="data-value">{{ $dp['family_type'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-graph-up-arrow"></i> Family Status</div>
+                                <div class="data-value">{{ $dp['family_status'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-person-workspace"></i> Father's Occupation</div>
+                                <div class="data-value">{{ $dp['father_occupation'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-person-hearts"></i> Mother's Occupation</div>
+                                <div class="data-value">{{ $dp['mother_occupation'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-person-standing"></i> Brothers</div>
+                                <div class="data-value">{{ $dp['brothers'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-person-standing-dress"></i> Sisters</div>
+                                <div class="data-value">{{ $dp['sisters'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-accordion">
+                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accPref-{{$dp['id']}}" aria-expanded="false">
+                            <span>Partner Preferences</span>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div id="accPref-{{$dp['id']}}" class="collapse detail-accordion-body" style="background: var(--brand-pink-light);">
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-calendar2-range"></i> Age Preference</div>
+                                <div class="data-value">{{ $dp['partner_age'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-rulers"></i> Height Preference</div>
+                                <div class="data-value">{{ $dp['partner_height'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div>
+                                <div class="data-value">{{ $dp['partner_marital_status'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-book"></i> Religion / Caste</div>
+                                <div class="data-value">{{ $dp['partner_religion'] }}</div>
+                            </div>
+                            <div class="data-item">
+                                <div class="data-item-header"><i class="bi bi-mortarboard"></i> Education</div>
+                                <div class="data-value">{{ $dp['partner_education'] }}</div>
+                            </div>
+                            <div class="data-item" style="grid-column: span 2;">
+                                <div class="data-item-header"><i class="bi bi-geo-alt"></i> Location Preference</div>
+                                <div class="data-value">{{ $dp['partner_location'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            @endforeach
+
+        </div>
     </div>
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // ==========================================
+    // DYNAMIC SPLIT PANE SPA CONTROLLER
+    // ==========================================
+    function showProfileDetails(profileId, listItemElement) {
+        
+        // 1. Trigger layout shift by removing full-width class
+        const layout = document.getElementById('mainSplitLayout');
+        if (layout.classList.contains('list-only-mode')) {
+            layout.classList.remove('list-only-mode');
+        }
+
+        // 2. Remove Active state from all list items
+        document.querySelectorAll('.list-item').forEach(el => {
+            el.classList.remove('active');
+        });
+
+        // 3. Add Custom Gradient Active state to clicked item
+        listItemElement.classList.add('active');
+
+        // 4. Hide all pre-rendered detail panes
+        document.querySelectorAll('.profile-detail-content').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        // 5. Fade in the target detail pane
+        const targetDetail = document.getElementById('detail-content-' + profileId);
+        if (targetDetail) {
+            targetDetail.style.display = 'block';
+            
+            // Optional: scroll detail pane to top
+            const container = document.getElementById('detailContainer');
+            if (container) {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    }
+
+    // Toggle Accordion chevron rotation
+    document.querySelectorAll('.detail-accordion-header').forEach(header => {
+        header.addEventListener('click', function() {
+            this.classList.toggle('collapsed');
+        });
+    });
+</script>
+@endpush

@@ -510,7 +510,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="footer-legal">
-                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                        <a href="{{ url('/privacy-policy') }}" class="legal-link">Privacy Policy</a>
                         <a href="/terms-of-service" class="legal-link">Terms of Service</a>
                         <a href="/cookies" class="legal-link">Cookie Policy</a>
                         <a href="/sitemap" class="legal-link">Sitemap</a>

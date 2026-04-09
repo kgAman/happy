@@ -26,12 +26,24 @@
 
     .font-playfair { font-family: 'Playfair Display', serif; }
 
+    /* --- WIDE CONTAINER --- */
+    .search-page-container {
+        width: 100%;
+        max-width: 1700px; /* Expands to cover almost the whole screen on large displays */
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .search-page-container { padding: 0 1rem; }
+    }
+
     /* --- Hero Section --- */
     .search-hero {
         position: relative;
         background-color: #1a0f1c; /* Deep plum */
         color: #ffffff;
-        padding: 80px 20px;
+        padding: 100px 20px; /* Made slightly taller */
         overflow: hidden;
     }
 
@@ -52,13 +64,13 @@
     }
 
     .search-hero h1 {
-        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 700;
         margin-bottom: 1rem;
     }
 
     .search-hero p {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         color: rgba(255, 255, 255, 0.8);
     }
 
@@ -66,8 +78,8 @@
     .search-layout {
         display: flex;
         flex-direction: column;
-        gap: 30px;
-        padding: 40px 0;
+        gap: 40px; /* Increased gap */
+        padding: 40px 0 80px 0;
     }
 
     @media (min-width: 992px) {
@@ -79,15 +91,16 @@
     /* --- Sidebar Filters --- */
     .filters-sidebar {
         background: var(--card-bg);
-        border-radius: 16px;
+        border-radius: 20px;
         border: 1px solid var(--border-color);
-        padding: 24px;
+        padding: 30px;
         width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     }
 
     @media (min-width: 992px) {
         .filters-sidebar {
-            width: 320px;
+            width: 350px; /* Slightly wider sidebar */
             flex-shrink: 0;
             position: sticky;
             top: 100px;
@@ -96,6 +109,9 @@
             overflow-y: auto;
         }
     }
+    
+    .filters-sidebar::-webkit-scrollbar { width: 5px; }
+    .filters-sidebar::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 10px; }
 
     .filter-header {
         display: flex;
@@ -107,7 +123,7 @@
     }
 
     .filter-header h3 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         margin: 0;
         color: var(--text-main);
     }
@@ -117,7 +133,7 @@
         border: none;
         color: var(--primary);
         font-size: 0.85rem;
-        font-weight: 500;
+        font-weight: 600;
         padding: 0;
     }
 
@@ -129,11 +145,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 600;
         color: var(--text-main);
         cursor: pointer;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
         background: none;
         border: none;
         width: 100%;
@@ -166,28 +182,28 @@
     .filter-row {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 12px;
+        margin-bottom: 12px;
         cursor: pointer;
     }
 
     .filter-row:last-child { margin-bottom: 0; }
 
     .filter-row input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         accent-color: var(--primary);
         cursor: pointer;
     }
 
     .filter-row i {
-        font-size: 1rem;
-        width: 16px;
+        font-size: 1.1rem;
+        width: 18px;
         text-align: center;
     }
 
     .filter-label {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: var(--text-main);
         flex-grow: 1;
         transition: color 0.2s;
@@ -199,7 +215,7 @@
         font-size: 0.75rem;
         background: var(--background);
         color: var(--text-muted);
-        padding: 2px 8px;
+        padding: 3px 10px;
         border-radius: 50px;
     }
 
@@ -210,11 +226,11 @@
         margin-bottom: 15px;
     }
     .range-values span {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-weight: 600;
         color: var(--primary);
         background: var(--primary-light);
-        padding: 4px 12px;
+        padding: 6px 14px;
         border-radius: 50px;
     }
 
@@ -222,9 +238,8 @@
     .results-area {
         flex-grow: 1;
         min-width: 0; /* Prevents flex blowout */
-        background: var(--card-bg);
+        background: transparent; /* Removed solid background to let layout breathe */
         border-radius: 16px;
-        border: 1px solid var(--border-color);
         overflow: hidden;
     }
 
@@ -233,13 +248,17 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--border-color);
+        padding: 20px 30px;
+        background: var(--card-bg);
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 30px; /* Space between header and grid */
         gap: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     }
 
     .results-info {
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: var(--text-main);
         margin: 0;
     }
@@ -247,14 +266,14 @@
     .results-controls {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 20px;
     }
 
     .sort-select {
-        font-size: 0.85rem;
-        padding: 6px 12px;
+        font-size: 0.95rem;
+        padding: 8px 16px;
         border: 1px solid var(--border-color);
-        border-radius: 8px;
+        border-radius: 10px;
         outline: none;
         color: var(--text-main);
     }
@@ -269,15 +288,15 @@
     }
 
     .btn-view-toggle {
-        width: 32px;
-        height: 32px;
+        width: 38px;
+        height: 38px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: 1px solid var(--border-color);
         background: var(--card-bg);
         color: var(--text-muted);
-        border-radius: 8px;
+        border-radius: 10px;
         cursor: pointer;
         transition: all 0.2s;
     }
@@ -291,117 +310,120 @@
     /* --- Grid View Cards --- */
     .profiles-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-        padding: 24px;
+        /* MASSIVELY INCREASED MIN-WIDTH FOR BIGGER CARDS */
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 30px; /* Bigger gaps between cards */
     }
 
     .card-grid {
-        border-radius: 16px;
+        border-radius: 20px;
         border: 1px solid var(--border-color);
         overflow: hidden;
         transition: all 0.3s ease;
         background: var(--card-bg);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     }
 
     .card-grid:hover {
-        border-color: rgba(231, 84, 128, 0.3);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-color: rgba(231, 84, 128, 0.4);
+        box-shadow: 0 15px 40px rgba(231, 84, 128, 0.1);
+        transform: translateY(-5px);
     }
 
     .card-img-wrapper {
         position: relative;
-        height: 200px;
+        height: 320px; /* INCREASED HEIGHT DRAMATICALLY */
         overflow: hidden;
     }
 
-.card-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
     .card-grid:hover .card-img-wrapper img { transform: scale(1.05); }
 
     .card-overlay-gradient {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
     }
 
     .badge-absolute {
         position: absolute;
-        font-size: 0.65rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        padding: 2px 8px;
+        padding: 4px 12px;
         border-radius: 50px;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         z-index: 2;
     }
 
-    .badge-verified { top: 12px; right: 12px; background: var(--success); color: white; }
-    .badge-premium { top: 12px; left: 12px; background: var(--gold); color: white; }
+    .badge-verified { top: 15px; right: 15px; background: var(--success); color: white; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+    .badge-premium { top: 15px; left: 15px; background: var(--gold); color: white; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); }
 
     .card-img-info {
         position: absolute;
-        bottom: 12px;
-        left: 16px;
-        right: 16px;
+        bottom: 15px;
+        left: 20px;
+        right: 20px;
         color: white;
         z-index: 2;
     }
 
     .card-img-info h3 {
-        font-size: 1.1rem;
-        margin: 0 0 4px 0;
+        font-size: 1.4rem; /* Larger font */
+        margin: 0 0 6px 0;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     .online-dot {
-        width: 8px;
-        height: 8px;
+        width: 10px;
+        height: 10px;
         background-color: var(--success);
         border-radius: 50%;
         display: inline-block;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
     }
 
     .card-body-custom {
-        padding: 16px;
+        padding: 25px; /* More breathing room */
     }
 
     .info-row {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 0.85rem;
+        gap: 10px;
+        font-size: 0.95rem; /* Larger text */
         color: var(--text-muted);
-        margin-bottom: 8px;
+        margin-bottom: 12px;
     }
 
-    .info-row i { color: rgba(231, 84, 128, 0.6); }
+    .info-row i { color: rgba(231, 84, 128, 0.7); font-size: 1.1rem; width: 20px; text-align: center; }
 
     .card-actions {
         display: flex;
-        gap: 10px;
-        margin-top: 16px;
+        gap: 15px;
+        margin-top: 20px;
     }
 
     .btn-action-sm {
         flex: 1;
-        padding: 8px 0;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        font-weight: 500;
+        padding: 10px 0;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
         border: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 5px;
+        gap: 8px;
         transition: all 0.2s;
     }
 
@@ -415,33 +437,41 @@
     .profiles-list {
         display: flex;
         flex-direction: column;
+        gap: 25px; /* Space between list items */
     }
 
     .card-list {
         display: flex;
         flex-direction: column;
-        border-bottom: 1px solid var(--border-color);
-        transition: background 0.2s;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--card-bg);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     }
 
     @media (min-width: 576px) {
         .card-list { flex-direction: row; }
     }
 
-    .card-list:hover { background-color: rgba(0,0,0,0.02); }
-    .card-list:last-child { border-bottom: none; }
+    .card-list:hover { 
+        border-color: rgba(231, 84, 128, 0.4);
+        box-shadow: 0 15px 40px rgba(231, 84, 128, 0.1);
+        transform: translateY(-3px);
+    }
 
     .card-list .list-img-wrapper {
         width: 100%;
-        height: 200px;
+        height: 250px;
         flex-shrink: 0;
     }
 
     @media (min-width: 576px) {
         .card-list .list-img-wrapper {
-            width: 200px;
-            height: auto;
-            min-height: 200px;
+            width: 320px; /* INCREASED LIST IMAGE SIZE */
+            height: 100%;
+            min-height: 280px;
         }
     }
 
@@ -452,7 +482,7 @@
     }
 
     .card-list-body {
-        padding: 20px;
+        padding: 30px;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -461,30 +491,30 @@
     /* --- Pagination --- */
     .pagination-wrapper {
         padding: 20px;
-        border-top: 1px solid var(--border-color);
+        margin-top: 40px;
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: 8px;
     }
 
     .page-btn {
-        width: 36px;
-        height: 36px;
+        width: 42px;
+        height: 42px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: 1px solid var(--border-color);
         background: var(--card-bg);
-        border-radius: 8px;
+        border-radius: 10px;
         color: var(--text-main);
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: 1rem;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.2s;
     }
 
     .page-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .page-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .page-btn.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 5px 15px rgba(231, 84, 128, 0.3);}
 
     /* Main Apply Filter Button */
     .btn-apply-filters {
@@ -492,13 +522,15 @@
         background: var(--primary);
         color: white;
         border: none;
-        padding: 10px;
-        border-radius: 10px;
-        font-weight: 500;
-        margin-top: 20px;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-top: 25px;
         transition: background 0.3s;
+        box-shadow: 0 5px 15px rgba(231, 84, 128, 0.2);
     }
-    .btn-apply-filters:hover { background: var(--primary-hover); }
+    .btn-apply-filters:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
     /* Mobile Filter Toggle */
     .btn-mobile-filters {
@@ -507,85 +539,22 @@
         gap: 8px;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
-        padding: 10px 20px;
+        padding: 12px 24px;
         border-radius: 12px;
-        font-weight: 500;
+        font-weight: 600;
         color: var(--text-main);
         margin-bottom: 20px;
     }
-    /* --- Custom Dual Range Slider --- */
-    .custom-slider-container {
-        position: relative;
-        width: 100%;
-        height: 6px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    /* The gray background track */
-    .custom-slider-track {
-        position: absolute;
-        width: 100%;
-        height: 6px;
-        background-color: #e9ecef;
-        border-radius: 4px;
-        z-index: 1;
-    }
-
-    /* The colored active range bar */
-    .custom-slider-range {
-        position: absolute;
-        height: 6px;
-        background: linear-gradient(90deg, #f8a5c2, #e75480); /* Beautiful pink gradient */
-        border-radius: 4px;
-        z-index: 2;
-    }
-
-    /* The invisible inputs that handle the dragging */
-    .custom-slider-input {
-        position: absolute;
-        width: 100%;
-        height: 6px;
-        top: 0;
-        left: 0;
-        -webkit-appearance: none;
-        appearance: none;
-        background: none;
-        pointer-events: none;
-        z-index: 3;
-        margin: 0;
-    }
-
-    /* The draggable thumbs */
-    .custom-slider-input::-webkit-slider-thumb {
-        height: 22px;
-        width: 22px;
-        border-radius: 50%;
-        background: #ffffff;
-        border: 2px solid var(--primary);
-        pointer-events: auto;
-        -webkit-appearance: none;
-        box-shadow: 0 2px 6px rgba(231, 84, 128, 0.3);
-        cursor: pointer;
-        transition: transform 0.1s ease;
-    }
-
-    .custom-slider-input::-webkit-slider-thumb:hover,
-    .custom-slider-input::-webkit-slider-thumb:active {
-        transform: scale(1.15);
-        background: var(--bg-blush);
-    }
-
-    .custom-slider-input::-moz-range-thumb {
-        height: 22px;
-        width: 22px;
-        border-radius: 50%;
-        background: #ffffff;
-        border: 2px solid var(--primary);
-        pointer-events: auto;
-        box-shadow: 0 2px 6px rgba(231, 84, 128, 0.3);
-        cursor: pointer;
-    }
+    
+    /* Custom Dual Range Slider */
+    .custom-slider-container { position: relative; width: 100%; height: 6px; margin-top: 20px; margin-bottom: 20px; }
+    .custom-slider-track { position: absolute; width: 100%; height: 6px; background-color: #e9ecef; border-radius: 4px; z-index: 1; }
+    .custom-slider-range { position: absolute; height: 6px; background: linear-gradient(90deg, #f8a5c2, #e75480); border-radius: 4px; z-index: 2; }
+    .custom-slider-input { position: absolute; width: 100%; height: 6px; top: 0; left: 0; -webkit-appearance: none; appearance: none; background: none; pointer-events: none; z-index: 3; margin: 0; }
+    .custom-slider-input::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); pointer-events: auto; -webkit-appearance: none; box-shadow: 0 2px 8px rgba(231, 84, 128, 0.3); cursor: pointer; transition: transform 0.1s ease; }
+    .custom-slider-input::-webkit-slider-thumb:hover, .custom-slider-input::-webkit-slider-thumb:active { transform: scale(1.15); background: var(--bg-blush); }
+    .custom-slider-input::-moz-range-thumb { height: 24px; width: 24px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); pointer-events: auto; box-shadow: 0 2px 8px rgba(231, 84, 128, 0.3); cursor: pointer; }
+    
     @media (min-width: 992px) { .btn-mobile-filters { display: none; } }
 </style>
 @endpush
@@ -599,7 +568,7 @@
     </div>
 </section>
 
-<div class="container">
+<div class="search-page-container">
     <div class="search-layout">
         
         <button class="btn-mobile-filters" onclick="toggleMobileSidebar()">
@@ -725,10 +694,12 @@
             </div>
 
             <button class="btn-apply-filters">Apply Filters</button>
-        </aside><main class="results-area">
+        </aside>
+        
+        <main class="results-area">
             
             <div class="results-header">
-                <p class="results-info">Showing <strong style="color: var(--primary);">24</strong> of <strong style="color: var(--primary);">1,245</strong> matches</p>
+                <p class="results-info">Showing <strong style="color: var(--primary);">8</strong> of <strong style="color: var(--primary);">1,245</strong> matches</p>
                 
                 <div class="results-controls">
                     <label class="text-muted small mb-0 d-none d-sm-block">Sort by:</label>
@@ -750,12 +721,16 @@
                 </div>
             </div>
 
-            {{-- Assuming $profiles is passed from controller. Using a fallback array for visual testing if empty --}}
             @php
-                $displayProfiles = isset($profiles) && count($profiles) > 0 ? $profiles : [
-                    ['id'=>1, 'name'=>'Priya Sharma', 'age'=>26, 'height'=>"5'4\"", 'profession'=>'Software Engineer', 'education'=>'B.Tech, IIT Bombay', 'location'=>'Mumbai', 'religion'=>'Hindu', 'about'=>'Love traveling and coding. Looking for a caring partner.', 'verified'=>true, 'premium'=>true, 'online'=>true, 'is_shortlisted'=>false, 'image'=>'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop'],
-                    ['id'=>2, 'name'=>'Arjun Patel', 'age'=>29, 'height'=>"5'10\"", 'profession'=>'Doctor', 'education'=>'MBBS, AIIMS', 'location'=>'Delhi', 'religion'=>'Hindu', 'about'=>'Passionate doctor who loves music.', 'verified'=>true, 'premium'=>false, 'online'=>false, 'is_shortlisted'=>true, 'image'=>'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop'],
-                    ['id'=>3, 'name'=>'Sneha Reddy', 'age'=>27, 'height'=>"5'3\"", 'profession'=>'CA', 'education'=>'B.Com', 'location'=>'Bangalore', 'religion'=>'Hindu', 'about'=>'Fun-loving CA.', 'verified'=>false, 'premium'=>false, 'online'=>true, 'is_shortlisted'=>false, 'image'=>'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop']
+                $displayProfiles = [
+                    ['id' => 1, 'name' => 'Priya Sharma', 'age' => 28, 'height' => "5'4\"", 'image' => 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Software Engineer', 'education' => 'MCA', 'location' => 'Bangalore', 'income' => '₹ 15-20 LPA', 'religion' => 'Hindu', 'about' => 'Software professional with a passion for technology. Looking for a partner who shares similar values and life goals.', 'verified' => true, 'premium' => true, 'online' => true, 'is_shortlisted' => false],
+                    ['id' => 2, 'name' => 'Raj Patel', 'age' => 32, 'height' => "5'11\"", 'image' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Business Consultant', 'education' => 'MBA', 'location' => 'Mumbai', 'income' => '₹ 25-30 LPA', 'religion' => 'Hindu', 'about' => 'Entrepreneurial spirit with successful business ventures. Values family and looking for a life partner.', 'verified' => true, 'premium' => true, 'online' => false, 'is_shortlisted' => false],
+                    ['id' => 3, 'name' => 'Anjali Reddy', 'age' => 26, 'height' => "5'3\"", 'image' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Doctor', 'education' => 'MBBS', 'location' => 'Hyderabad', 'income' => '₹ 12-18 LPA', 'religion' => 'Hindu', 'about' => 'Medical professional dedicated to helping others. Enjoys traveling, reading, and spending time with family.', 'verified' => true, 'premium' => false, 'online' => true, 'is_shortlisted' => false],
+                    ['id' => 4, 'name' => 'Amit Kumar', 'age' => 30, 'height' => "5'10\"", 'image' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Civil Engineer', 'education' => 'B.Tech', 'location' => 'Delhi', 'income' => '₹ 10-15 LPA', 'religion' => 'Hindu', 'about' => 'Professional engineer with passion for architecture. Values honesty and commitment in relationships.', 'verified' => true, 'premium' => true, 'online' => false, 'is_shortlisted' => false],
+                    ['id' => 5, 'name' => 'Sneha Singh', 'age' => 27, 'height' => "5'5\"", 'image' => 'https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Fashion Designer', 'education' => 'B.Des', 'location' => 'Mumbai', 'income' => '₹ 8-12 LPA', 'religion' => 'Hindu', 'about' => 'Creative professional with successful fashion brand. Looking for a partner who appreciates art and culture.', 'verified' => true, 'premium' => false, 'online' => true, 'is_shortlisted' => false],
+                    ['id' => 6, 'name' => 'Vikram Malhotra', 'age' => 35, 'height' => "6'0\"", 'image' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Bank Manager', 'education' => 'MBA Finance', 'location' => 'Chennai', 'income' => '₹ 20-25 LPA', 'religion' => 'Hindu', 'about' => 'Finance professional with stable career. Enjoys cricket, reading, and family gatherings.', 'verified' => true, 'premium' => true, 'online' => false, 'is_shortlisted' => false],
+                    ['id' => 7, 'name' => 'Neha Gupta', 'age' => 29, 'height' => "5'4\"", 'image' => 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Marketing Manager', 'education' => 'MBA Marketing', 'location' => 'Delhi', 'income' => '₹ 18-22 LPA', 'religion' => 'Hindu', 'about' => 'Dynamic marketing professional with global experience. Values communication and shared interests.', 'verified' => true, 'premium' => true, 'online' => true, 'is_shortlisted' => false],
+                    ['id' => 8, 'name' => 'Rahul Mehta', 'age' => 31, 'height' => "5'9\"", 'image' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80', 'profession' => 'Lawyer', 'education' => 'LLB', 'location' => 'Bangalore', 'income' => '₹ 22-28 LPA', 'religion' => 'Hindu', 'about' => 'Legal professional with successful practice. Looking for a partner with strong family values.', 'verified' => true, 'premium' => false, 'online' => false, 'is_shortlisted' => false],
                 ];
             @endphp
 
@@ -763,7 +738,7 @@
                 @foreach($displayProfiles as $profile)
                 <div class="card-grid">
                     <div class="card-img-wrapper">
-                        <img src="{{ $profile['profile_photo_url'] }}" alt="{{ $profile['name'] }}">
+                        <img src="{{ $profile['image'] }}" alt="{{ $profile['name'] }}">
                         <div class="card-overlay-gradient"></div>
                         @if($profile['verified'])
                             <span class="badge-absolute badge-verified"><i class="bi bi-patch-check"></i> Verified</span>

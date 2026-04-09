@@ -174,7 +174,7 @@
         z-index: 10;
         padding-top: 130px;
         padding-bottom: 80px;
-        max-width: 1100px; /* Widened to remove empty space */
+        max-width: 1100px;
     }
 
     /* --- BACK BUTTON --- */
@@ -334,7 +334,7 @@
     .btn-action-secondary {
         background: #ffffff;
         color: var(--brand-pink);
-        border: 2px solid transparent; /* Replaced border with shadow for premium feel */
+        border: 2px solid transparent; 
         box-shadow: 0 8px 20px rgba(0,0,0,0.06);
         padding: 14px 30px;
         border-radius: 50px;
@@ -422,7 +422,7 @@
     /* Upgraded Data Grids */
     .data-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Forced 3 columns for wider spread */
+        grid-template-columns: repeat(3, 1fr);
         gap: 35px 25px;
     }
 
