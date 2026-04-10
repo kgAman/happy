@@ -159,8 +159,8 @@
     }
 
     .list-item:hover .list-view-icon {
-        background: var(--brand-pink-light);
-        color: var(--brand-pink);
+        background: var(--brand-pink-light, rgba(231, 84, 128, 0.1));
+        color: #e75480;
     }
 
     /* Make the eye button look good on the active pink gradient */
@@ -460,6 +460,74 @@
     .data-item-header i { color: #fecdd3; font-size: 1.1rem; }
     .data-value { font-size: 1.05rem; font-weight: 700; color: #111827; padding-left: 26px; } 
 
+    /* MATCHES SECTION STYLING */
+    .matches-section {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(231, 84, 128, 0.15);
+    }
+    .matches-section h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 25px;
+    }
+    .matches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .match-mini-card {
+        background: #ffffff;
+        border: 1px solid rgba(231, 84, 128, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+        padding-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .match-mini-card:hover {
+        transform: translateY(-5px);
+        border-color: #e75480;
+        box-shadow: 0 10px 25px rgba(231, 84, 128, 0.15);
+    }
+    .match-mini-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .match-mini-info {
+        padding: 15px 15px 10px;
+    }
+    .match-mini-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .match-mini-details {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+    .match-score-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(231, 84, 128, 0.1);
+        color: #e75480;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 50px;
+    }
+
     @media (max-width: 991px) {
         .split-layout { flex-direction: column; height: auto; }
         .split-layout.list-only-mode .profile-list-pane { width: 100%; }
@@ -706,6 +774,22 @@
                         $dp['family_type'] = 'Joint'; $dp['family_status'] = 'Middle Class'; $dp['father_occupation'] = 'Business'; $dp['mother_occupation'] = 'Housewife'; $dp['brothers'] = '1'; $dp['sisters'] = '1';
                         $dp['partner_age'] = '28 - 32'; $dp['partner_height'] = '5\'6" - 6\'0"'; $dp['partner_marital_status'] = 'Single'; $dp['partner_religion'] = 'Hinduism / Baniya'; $dp['partner_education'] = 'Post Graduate'; $dp['partner_location'] = 'Delhi, Mumbai, Pune';
                     }
+
+                    // --- GENERATE DUMMY MATCHES FOR THIS PROFILE ---
+                    // Select random images for visual layout
+                    $stockImages = [
+                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',
+                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop',
+                        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop',
+                        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop',
+                        'https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?w=400&h=500&fit=crop'
+                    ];
+                    shuffle($stockImages);
+                    
+                    // Filter out current profile from the list to get 3 actual other profiles
+                    $availableMatches = collect($profiles->items())->filter(function($p) use ($profileDetail) {
+                        return $p->id !== $profileDetail->id;
+                    })->take(3)->values();
                 @endphp
 
                 <div class="profile-detail-content" id="detail-content-{{ $profileDetail->id }}" style="display: none;">
@@ -866,7 +950,7 @@
                             <span>Partner Preferences</span>
                             <i class="bi bi-chevron-down"></i>
                         </div>
-                        <div id="accPref-{{$dp['id']}}" class="collapse detail-accordion-body" style="background: var(--brand-pink-light);">
+                        <div id="accPref-{{$dp['id']}}" class="collapse detail-accordion-body" style="background: rgba(231, 84, 128, 0.05);">
                             <div class="data-item">
                                 <div class="data-item-header"><i class="bi bi-calendar2-range"></i> Age Preference</div>
                                 <div class="data-value">{{ $dp['partner_age'] }}</div>
@@ -893,6 +977,30 @@
                             </div>
                         </div>
                     </div>
+
+                    @if(count($availableMatches) > 0)
+                    <div class="matches-section">
+                        <h3 class="font-serif">Highly Compatible Matches</h3>
+                        <div class="matches-grid">
+                            @foreach($availableMatches as $index => $match)
+                                @php
+                                    $matchName = !empty($match->first_name) ? trim($match->first_name.' '.$match->last_name) : 'Candidate '.$match->id;
+                                    $matchAge = $match->age ?? rand(25, 32);
+                                    $matchHeight = $match->height_feet ? $match->height_feet."' ".$match->height_inch."\"" : "5'".rand(3,9)."\"";
+                                    $matchScore = rand(85, 98); // Dummy match score
+                                @endphp
+                                <div class="match-mini-card" onclick="showProfileDetails({{ $match->id }}, document.getElementById('list-item-{{ $match->id }}'))">
+                                    <img src="{{ $stockImages[$index % count($stockImages)] }}" class="match-mini-img" alt="Profile">
+                                    <div class="match-mini-info">
+                                        <h5 class="match-mini-name">{{ $matchName }}</h5>
+                                        <p class="match-mini-details">{{ $matchAge }} yrs, {{ $matchHeight }}</p>
+                                        <span class="match-score-badge"><i class="bi bi-stars"></i> {{ $matchScore }}% Match</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
 
                 </div>
             @endforeach
@@ -922,7 +1030,12 @@
         });
 
         // 3. Add Custom Gradient Active state to clicked item
-        listItemElement.classList.add('active');
+        if(listItemElement) {
+            listItemElement.classList.add('active');
+            
+            // Scroll the left sidebar so the active item is in view
+            listItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
         // 4. Hide all pre-rendered detail panes
         document.querySelectorAll('.profile-detail-content').forEach(el => {
@@ -934,7 +1047,7 @@
         if (targetDetail) {
             targetDetail.style.display = 'block';
             
-            // Optional: scroll detail pane to top
+            // Scroll right pane to top
             const container = document.getElementById('detailContainer');
             if (container) {
                 container.scrollTo({ top: 0, behavior: 'smooth' });
