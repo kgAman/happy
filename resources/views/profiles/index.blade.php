@@ -123,21 +123,20 @@
         outline: none;
     }
 
-    .filter-label {
+    .filter-label, .edit-label {
         font-size: 0.75rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 1px;
         color: #64748b;
         margin-bottom: 0.5rem;
+        display: block;
     }
 
-    /* ========================================================
-       SPLIT PANE MASTER-DETAIL LAYOUT (SPA STYLE)
-       ======================================================== */
+
     .split-layout {
         display: flex;
-        gap: 25px;
+        gap: 100px; /* Increased space between sidebar and form */
         height: calc(100vh - 140px);
         min-height: 800px;
         margin-bottom: 40px;
@@ -145,6 +144,12 @@
     }
     
     /* Eye Button on List Items */
+    .list-action-icons {
+        display: flex;
+        gap: 5px;
+        margin-left: 10px;
+    }
+
     .list-view-icon {
         width: 36px;
         height: 36px;
@@ -155,7 +160,6 @@
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
-        margin-left: 10px;
     }
 
     .list-item:hover .list-view-icon {
@@ -163,7 +167,6 @@
         color: #e75480;
     }
 
-    /* Make the eye button look good on the active pink gradient */
     .list-item.active .list-view-icon {
         background: rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
@@ -255,7 +258,7 @@
     }
     
     .list-item.active .list-loc i {
-        color: #ff9fb8 !important; /* Lighter pink so icon is visible on dark gradient */
+        color: #ff9fb8 !important;
     }
 
     /* Alter Avatar when active */
@@ -295,8 +298,10 @@
     .list-loc i { color: #e75480; transition: color 0.2s;}
 
     /* --- RIGHT PANE (DETAILS) --- */
+    /* --- RIGHT PANE (DETAILS) --- */
     .profile-detail-pane {
         flex: 1;
+        margin-left: 50px !important; /* Forces the gap from the left sidebar */
         background: #faf7f8; 
         border-radius: 24px;
         border: 1px solid rgba(231, 84, 128, 0.1);
@@ -314,7 +319,7 @@
     .profile-detail-pane::-webkit-scrollbar { width: 6px; }
     .profile-detail-pane::-webkit-scrollbar-thumb { background-color: rgba(231, 84, 128, 0.2); border-radius: 10px; }
 
-    .profile-detail-content {
+    .view-mode, .edit-mode {
         animation: fadeIn 0.4s ease;
     }
     
@@ -424,6 +429,7 @@
         display: inline-flex; align-items: center; gap: 8px;
         transition: all 0.2s;
         text-decoration: none;
+        cursor: pointer;
     }
     .btn-action-outline:hover { background: #fdf2f5; border-color: #e75480; }
 
@@ -460,10 +466,14 @@
     .data-item-header i { color: #fecdd3; font-size: 1.1rem; }
     .data-value { font-size: 1.05rem; font-weight: 700; color: #111827; padding-left: 26px; } 
 
+    /* Edit Mode Styling Overrides */
+    .edit-mode .detail-hero-card { flex-direction: column; gap: 15px; }
+    .edit-mode .data-item { margin-bottom: 5px; }
+
     /* MATCHES SECTION STYLING */
     .matches-section {
-        margin-top: 40px;
-        padding-top: 30px;
+        margin-top: 50px;
+        padding-top: 40px;
         border-top: 1px solid rgba(231, 84, 128, 0.15);
     }
     .matches-section h3 {
@@ -475,7 +485,7 @@
     }
     .matches-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 20px;
     }
     .match-mini-card {
@@ -483,7 +493,7 @@
         border: 1px solid rgba(231, 84, 128, 0.1);
         border-radius: 20px;
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease, border-color 0.3s ease;
         cursor: pointer;
         text-align: center;
         padding-bottom: 20px;
@@ -491,7 +501,7 @@
     }
     .match-mini-card:hover {
         transform: translateY(-5px);
-        border-color: #e75480;
+        border-color: var(--brand-pink);
         box-shadow: 0 10px 25px rgba(231, 84, 128, 0.15);
     }
     .match-mini-img {
@@ -695,15 +705,20 @@
                         $listLoc = !empty($profileLoop->city) ? $profileLoop->city : ($profileLoop->birth_place ?? 'Location Unknown');
                     @endphp
 
-                    <div class="list-item" id="list-item-{{ $profileLoop->id }}" onclick="showProfileDetails({{ $profileLoop->id }}, this)">
+                    <div class="list-item" id="list-item-{{ $profileLoop->id }}" onclick="showProfileDetails({{ $profileLoop->id }}, this, 'view')">
                         <div class="list-id">#{{ $profileLoop->id }}</div>
                         <div class="list-avatar">{{ strtoupper($initial) }}</div>
                         <div class="list-info">
                             <h4 class="list-name">{{ $listName }}</h4>
                             <div class="list-loc"><i class="bi bi-geo-alt-fill"></i> {{ strtoupper($listLoc) }}</div>
                         </div>
-                        <div class="list-view-icon">
-                            <i class="bi bi-eye-fill"></i>
+                        <div class="list-action-icons">
+                            <div class="list-view-icon" title="View Profile" onclick="showProfileDetails({{ $profileLoop->id }}, this.closest('.list-item'), 'view'); event.stopPropagation();">
+                                <i class="bi bi-eye-fill"></i>
+                            </div>
+                            <div class="list-view-icon" title="Edit Profile" onclick="showProfileDetails({{ $profileLoop->id }}, this.closest('.list-item'), 'edit'); event.stopPropagation();">
+                                <i class="bi bi-pencil-fill"></i>
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -776,7 +791,6 @@
                     }
 
                     // --- GENERATE DUMMY MATCHES FOR THIS PROFILE ---
-                    // Select random images for visual layout
                     $stockImages = [
                         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',
                         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop',
@@ -786,7 +800,6 @@
                     ];
                     shuffle($stockImages);
                     
-                    // Filter out current profile from the list to get 3 actual other profiles
                     $availableMatches = collect($profiles->items())->filter(function($p) use ($profileDetail) {
                         return $p->id !== $profileDetail->id;
                     })->take(3)->values();
@@ -794,213 +807,329 @@
 
                 <div class="profile-detail-content" id="detail-content-{{ $profileDetail->id }}" style="display: none;">
                     
-                    <div class="detail-hero-card">
-                        <div class="detail-img-box">
-                            @if($dp['image'])
-                                <img src="{{ $dp['image'] }}" alt="Profile">
-                            @else
-                                <i class="bi bi-person-fill"></i>
-                            @endif
-                        </div>
-                        
-                        <div class="detail-info">
-                            <div class="detail-badge-id">
-                                <i class="bi bi-fingerprint me-1"></i> {{ $dp['profile_id'] }}
+                    <div id="view-mode-{{ $profileDetail->id }}" class="view-mode">
+                        <div class="detail-hero-card">
+                            <div class="detail-img-box">
+                                @if($dp['image'])
+                                    <img src="{{ $dp['image'] }}" alt="Profile">
+                                @else
+                                    <i class="bi bi-person-fill"></i>
+                                @endif
                             </div>
                             
-                            <h1 class="detail-name">{{ $dp['name'] }}</h1>
-                            
-                            <div class="detail-stats">
-                                <span><i class="bi bi-calendar"></i> ~{{ $dp['age'] }} Years</span>
-                                <span><i class="bi bi-arrows-vertical"></i> {{ $dp['height'] }}</span>
-                                <span><i class="bi bi-moon-stars"></i> {{ $dp['religion'] }}</span>
-                                <span><i class="bi bi-geo-alt"></i> {{ $dp['location'] }}</span>
-                            </div>
-
-                            <p class="detail-bio">"{{ $dp['about'] }}"</p>
-
-                            <div class="detail-actions">
-                                <button class="btn-action-solid"><i class="bi bi-heart-fill"></i> Send Interest</button>
-                                <a href="/messages/chat/{{$dp['id']}}" class="btn-action-outline"><i class="bi bi-chat-dots-fill"></i> Message</a>
-                                <a href="{{ route('admin.profiles.edit', $dp['id']) }}" class="btn-action-outline text-muted border-secondary">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-accordion">
-                        <div class="detail-accordion-header" data-bs-toggle="collapse" data-bs-target="#accBasic-{{$dp['id']}}" aria-expanded="true">
-                            <span>Basic Information</span>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <div id="accBasic-{{$dp['id']}}" class="collapse show detail-accordion-body">
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-gender-ambiguous"></i> Gender</div>
-                                <div class="data-value">{{ $dp['gender'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div>
-                                <div class="data-value">{{ $dp['marital_status'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-calendar-event"></i> Date Of Birth</div>
-                                <div class="data-value">{{ $dp['dob'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-translate"></i> Mother Tongue</div>
-                                <div class="data-value">{{ $dp['mother_tongue'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-cup-hot"></i> Diet</div>
-                                <div class="data-value">{{ $dp['diet'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-droplet"></i> Blood Group</div>
-                                <div class="data-value">{{ $dp['blood_group'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-accordion">
-                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accAstro-{{$dp['id']}}" aria-expanded="false">
-                            <span>Religious & Astrological Background</span>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <div id="accAstro-{{$dp['id']}}" class="collapse detail-accordion-body">
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-book"></i> Religion</div>
-                                <div class="data-value">{{ $dp['religion'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-diagram-3"></i> Caste</div>
-                                <div class="data-value">{{ $dp['caste'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-bezier2"></i> Gotra</div>
-                                <div class="data-value">{{ $dp['gotra'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-exclamation-triangle"></i> Mangal Dosh</div>
-                                <div class="data-value">{{ $dp['mangal_dosh'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-accordion">
-                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accEdu-{{$dp['id']}}" aria-expanded="false">
-                            <span>Education & Profession</span>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <div id="accEdu-{{$dp['id']}}" class="collapse detail-accordion-body">
-                            <div class="data-item" style="grid-column: span 2;">
-                                <div class="data-item-header"><i class="bi bi-mortarboard"></i> Highest Education</div>
-                                <div class="data-value">{{ $dp['highest_qualification'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-briefcase"></i> Occupation</div>
-                                <div class="data-value">{{ $dp['profession'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-building"></i> Company / Business</div>
-                                <div class="data-value">{{ $dp['company'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-cash-coin"></i> Annual Income</div>
-                                <div class="data-value" style="color: var(--brand-pink); font-weight: 700;">{{ $dp['income'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-accordion">
-                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accFamily-{{$dp['id']}}" aria-expanded="false">
-                            <span>Family Details</span>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <div id="accFamily-{{$dp['id']}}" class="collapse detail-accordion-body">
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-house-door"></i> Family Type</div>
-                                <div class="data-value">{{ $dp['family_type'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-graph-up-arrow"></i> Family Status</div>
-                                <div class="data-value">{{ $dp['family_status'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-person-workspace"></i> Father's Occupation</div>
-                                <div class="data-value">{{ $dp['father_occupation'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-person-hearts"></i> Mother's Occupation</div>
-                                <div class="data-value">{{ $dp['mother_occupation'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-person-standing"></i> Brothers</div>
-                                <div class="data-value">{{ $dp['brothers'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-person-standing-dress"></i> Sisters</div>
-                                <div class="data-value">{{ $dp['sisters'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-accordion">
-                        <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#accPref-{{$dp['id']}}" aria-expanded="false">
-                            <span>Partner Preferences</span>
-                            <i class="bi bi-chevron-down"></i>
-                        </div>
-                        <div id="accPref-{{$dp['id']}}" class="collapse detail-accordion-body" style="background: rgba(231, 84, 128, 0.05);">
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-calendar2-range"></i> Age Preference</div>
-                                <div class="data-value">{{ $dp['partner_age'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-rulers"></i> Height Preference</div>
-                                <div class="data-value">{{ $dp['partner_height'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div>
-                                <div class="data-value">{{ $dp['partner_marital_status'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-book"></i> Religion / Caste</div>
-                                <div class="data-value">{{ $dp['partner_religion'] }}</div>
-                            </div>
-                            <div class="data-item">
-                                <div class="data-item-header"><i class="bi bi-mortarboard"></i> Education</div>
-                                <div class="data-value">{{ $dp['partner_education'] }}</div>
-                            </div>
-                            <div class="data-item" style="grid-column: span 2;">
-                                <div class="data-item-header"><i class="bi bi-geo-alt"></i> Location Preference</div>
-                                <div class="data-value">{{ $dp['partner_location'] }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if(count($availableMatches) > 0)
-                    <div class="matches-section">
-                        <h3 class="font-serif">Highly Compatible Matches</h3>
-                        <div class="matches-grid">
-                            @foreach($availableMatches as $index => $match)
-                                @php
-                                    $matchName = !empty($match->first_name) ? trim($match->first_name.' '.$match->last_name) : 'Candidate '.$match->id;
-                                    $matchAge = $match->age ?? rand(25, 32);
-                                    $matchHeight = $match->height_feet ? $match->height_feet."' ".$match->height_inch."\"" : "5'".rand(3,9)."\"";
-                                    $matchScore = rand(85, 98); // Dummy match score
-                                @endphp
-                                <div class="match-mini-card" onclick="showProfileDetails({{ $match->id }}, document.getElementById('list-item-{{ $match->id }}'))">
-                                    <img src="{{ $stockImages[$index % count($stockImages)] }}" class="match-mini-img" alt="Profile">
-                                    <div class="match-mini-info">
-                                        <h5 class="match-mini-name">{{ $matchName }}</h5>
-                                        <p class="match-mini-details">{{ $matchAge }} yrs, {{ $matchHeight }}</p>
-                                        <span class="match-score-badge"><i class="bi bi-stars"></i> {{ $matchScore }}% Match</span>
-                                    </div>
+                            <div class="detail-info">
+                                <div class="detail-badge-id">
+                                    <i class="bi bi-fingerprint me-1"></i> {{ $dp['profile_id'] }}
                                 </div>
-                            @endforeach
+                                
+                                <h1 class="detail-name">{{ $dp['name'] }}</h1>
+                                
+                                <div class="detail-stats">
+                                    <span><i class="bi bi-calendar"></i> ~{{ $dp['age'] }} Years</span>
+                                    <span><i class="bi bi-arrows-vertical"></i> {{ $dp['height'] }}</span>
+                                    <span><i class="bi bi-moon-stars"></i> {{ $dp['religion'] }}</span>
+                                    <span><i class="bi bi-geo-alt"></i> {{ $dp['location'] }}</span>
+                                </div>
+
+                                <p class="detail-bio">"{{ $dp['about'] }}"</p>
+
+                                <div class="detail-actions">
+                                    <button class="btn-action-solid"><i class="bi bi-heart-fill"></i> Send Interest</button>
+                                    <a href="/messages/chat/{{$dp['id']}}" class="btn-action-outline"><i class="bi bi-chat-dots-fill"></i> Message</a>
+                                    <button type="button" class="btn-action-outline text-muted border-secondary" onclick="toggleEditMode({{ $profileDetail->id }}, 'edit')">
+                                        <i class="bi bi-pencil-square"></i> Inline Edit
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="detail-accordion">
+                            <div class="detail-accordion-header" data-bs-toggle="collapse" data-bs-target="#viewBasic-{{$dp['id']}}" aria-expanded="true">
+                                <span>Basic Information</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                            <div id="viewBasic-{{$dp['id']}}" class="collapse show detail-accordion-body">
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-gender-ambiguous"></i> Gender</div><div class="data-value">{{ $dp['gender'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div><div class="data-value">{{ $dp['marital_status'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-calendar-event"></i> Date Of Birth</div><div class="data-value">{{ $dp['dob'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-translate"></i> Mother Tongue</div><div class="data-value">{{ $dp['mother_tongue'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-cup-hot"></i> Diet</div><div class="data-value">{{ $dp['diet'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-droplet"></i> Blood Group</div><div class="data-value">{{ $dp['blood_group'] }}</div></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion">
+                            <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#viewAstro-{{$dp['id']}}" aria-expanded="false">
+                                <span>Religious & Astrological Background</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                            <div id="viewAstro-{{$dp['id']}}" class="collapse detail-accordion-body">
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-book"></i> Religion</div><div class="data-value">{{ $dp['religion'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-diagram-3"></i> Caste</div><div class="data-value">{{ $dp['caste'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-bezier2"></i> Gotra</div><div class="data-value">{{ $dp['gotra'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-exclamation-triangle"></i> Mangal Dosh</div><div class="data-value">{{ $dp['mangal_dosh'] }}</div></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion">
+                            <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#viewEdu-{{$dp['id']}}" aria-expanded="false">
+                                <span>Education & Profession</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                            <div id="viewEdu-{{$dp['id']}}" class="collapse detail-accordion-body">
+                                <div class="data-item" style="grid-column: span 2;"><div class="data-item-header"><i class="bi bi-mortarboard"></i> Highest Education</div><div class="data-value">{{ $dp['highest_qualification'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-briefcase"></i> Occupation</div><div class="data-value">{{ $dp['profession'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-building"></i> Company / Business</div><div class="data-value">{{ $dp['company'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-cash-coin"></i> Annual Income</div><div class="data-value" style="color: var(--brand-pink); font-weight: 700;">{{ $dp['income'] }}</div></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion">
+                            <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#viewFamily-{{$dp['id']}}" aria-expanded="false">
+                                <span>Family Details</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                            <div id="viewFamily-{{$dp['id']}}" class="collapse detail-accordion-body">
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-house-door"></i> Family Type</div><div class="data-value">{{ $dp['family_type'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-graph-up-arrow"></i> Family Status</div><div class="data-value">{{ $dp['family_status'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-person-workspace"></i> Father's Occupation</div><div class="data-value">{{ $dp['father_occupation'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-person-hearts"></i> Mother's Occupation</div><div class="data-value">{{ $dp['mother_occupation'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-person-standing"></i> Brothers</div><div class="data-value">{{ $dp['brothers'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-person-standing-dress"></i> Sisters</div><div class="data-value">{{ $dp['sisters'] }}</div></div>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion">
+                            <div class="detail-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#viewPref-{{$dp['id']}}" aria-expanded="false">
+                                <span>Partner Preferences</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+                            <div id="viewPref-{{$dp['id']}}" class="collapse detail-accordion-body" style="background: rgba(231, 84, 128, 0.05);">
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-calendar2-range"></i> Age Preference</div><div class="data-value">{{ $dp['partner_age'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-rulers"></i> Height Preference</div><div class="data-value">{{ $dp['partner_height'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-people"></i> Marital Status</div><div class="data-value">{{ $dp['partner_marital_status'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-book"></i> Religion / Caste</div><div class="data-value">{{ $dp['partner_religion'] }}</div></div>
+                                <div class="data-item"><div class="data-item-header"><i class="bi bi-mortarboard"></i> Education</div><div class="data-value">{{ $dp['partner_education'] }}</div></div>
+                                <div class="data-item" style="grid-column: span 2;"><div class="data-item-header"><i class="bi bi-geo-alt"></i> Location Preference</div><div class="data-value">{{ $dp['partner_location'] }}</div></div>
+                            </div>
+                        </div>
+
+                        @if(count($availableMatches) > 0)
+                        <div class="matches-section">
+                            <h3 class="font-serif">Highly Compatible Matches</h3>
+                            <div class="matches-grid">
+                                @foreach($availableMatches as $index => $match)
+                                    @php
+                                        $matchName = !empty($match->first_name) ? trim($match->first_name.' '.$match->last_name) : 'Candidate '.$match->id;
+                                        $matchAge = $match->age ?? rand(25, 32);
+                                        $matchHeight = $match->height_feet ? $match->height_feet."' ".$match->height_inch."\"" : "5'".rand(3,9)."\"";
+                                        $matchScore = rand(85, 98); // Dummy match score
+                                    @endphp
+                                    <div class="match-mini-card" onclick="showProfileDetails({{ $match->id }}, document.getElementById('list-item-{{ $match->id }}'), 'view')">
+                                        <img src="{{ $stockImages[$index % count($stockImages)] }}" class="match-mini-img" alt="Profile">
+                                        <div class="match-mini-info">
+                                            <h5 class="match-mini-name">{{ $matchName }}</h5>
+                                            <p class="match-mini-details">{{ $matchAge }} yrs, {{ $matchHeight }}</p>
+                                            <span class="match-score-badge"><i class="bi bi-stars"></i> {{ $matchScore }}% Match</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                     </div>
-                    @endif
+
+
+                    <form id="edit-mode-{{ $profileDetail->id }}" class="edit-mode" style="display: none;" method="POST" action="{{ route('admin.profiles.update', $profileDetail->id) }}" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        
+                        <div class="detail-hero-card edit-mode flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3 w-100 border-bottom pb-3">
+                                <h2 class="font-serif text-dark m-0 fs-3">Edit Profile #{{ $profileDetail->id }}</h2>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="toggleEditMode({{ $profileDetail->id }}, 'view')"><i class="bi bi-x-lg"></i> Cancel</button>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="edit-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control premium-input" value="{{ $profileDetail->first_name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="edit-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control premium-input" value="{{ $profileDetail->last_name }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="edit-label">About Me (Bio)</label>
+                                    <textarea name="about_myself" class="form-control premium-input" rows="3">{{ $profileDetail->about_myself }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion-body mb-4 d-grid">
+                            <h4 class="font-serif text-dark mb-3" style="grid-column: 1/-1;"><i class="bi bi-person text-pink me-2"></i> Basic Info</h4>
+                            <div class="data-item">
+                                <label class="edit-label">Gender</label>
+                                <select name="gender" class="form-select premium-input">
+                                    <option value="Male" {{ $profileDetail->gender == 'Male' ? 'selected' : '' }}>Male</option>
+                                    <option value="Female" {{ $profileDetail->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                                </select>
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Marital Status</label>
+                                <select name="marital_status" class="form-select premium-input">
+                                    <option value="Single" {{ $profileDetail->marital_status == 'Single' ? 'selected' : '' }}>Single</option>
+                                    <option value="Married" {{ $profileDetail->marital_status == 'Married' ? 'selected' : '' }}>Married</option>
+                                    <option value="Divorced" {{ $profileDetail->marital_status == 'Divorced' ? 'selected' : '' }}>Divorced</option>
+                                    <option value="Widowed" {{ $profileDetail->marital_status == 'Widowed' ? 'selected' : '' }}>Widowed</option>
+                                </select>
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Date of Birth</label>
+                                <input type="date" name="dob" class="form-control premium-input" value="{{ $profileDetail->dob ? \Carbon\Carbon::parse($profileDetail->dob)->format('Y-m-d') : '' }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Mother Tongue</label>
+                                <input type="text" name="mother_tongue" class="form-control premium-input" value="{{ $profileDetail->mother_tongue }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Diet</label>
+                                <select name="diet" class="form-select premium-input">
+                                    <option value="Vegetarian" {{ $profileDetail->diet == 'Vegetarian' ? 'selected' : '' }}>Vegetarian</option>
+                                    <option value="Non-Vegetarian" {{ $profileDetail->diet == 'Non-Vegetarian' ? 'selected' : '' }}>Non-Vegetarian</option>
+                                    <option value="Eggetarian" {{ $profileDetail->diet == 'Eggetarian' ? 'selected' : '' }}>Eggetarian</option>
+                                </select>
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Blood Group</label>
+                                <input type="text" name="blood_group" class="form-control premium-input" value="{{ $profileDetail->blood_group }}">
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion-body mb-4 d-grid">
+                            <h4 class="font-serif text-dark mb-3" style="grid-column: 1/-1;"><i class="bi bi-book text-pink me-2"></i> Religious Background</h4>
+                            <div class="data-item">
+                                <label class="edit-label">Religion</label>
+                                <input type="text" name="religion" class="form-control premium-input" value="{{ $profileDetail->religion }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Caste</label>
+                                <input type="text" name="caste" class="form-control premium-input" value="{{ $profileDetail->caste }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Gotra</label>
+                                <input type="text" name="gotra" class="form-control premium-input" value="{{ $profileDetail->gotra }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Mangal Dosh</label>
+                                <select name="mangal_dosh" class="form-select premium-input">
+                                    <option value="No" {{ $profileDetail->mangal_dosh == 'No' ? 'selected' : '' }}>No</option>
+                                    <option value="Yes" {{ $profileDetail->mangal_dosh == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                    <option value="Don't Know" {{ $profileDetail->mangal_dosh == "Don't Know" ? 'selected' : '' }}>Don't Know</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion-body mb-4 d-grid">
+                            <h4 class="font-serif text-dark mb-3" style="grid-column: 1/-1;"><i class="bi bi-briefcase text-pink me-2"></i> Education & Profession</h4>
+                            <div class="data-item" style="grid-column: span 2;">
+                                <label class="edit-label">Highest Education</label>
+                                <input type="text" name="highest_qualification" class="form-control premium-input" value="{{ $profileDetail->highest_qualification }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Occupation</label>
+                                <input type="text" name="occupation" class="form-control premium-input" value="{{ $profileDetail->occupation }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Company / Business</label>
+                                <input type="text" name="company_name" class="form-control premium-input" value="{{ $profileDetail->company_name }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Annual Income</label>
+                                <input type="text" name="annual_income" class="form-control premium-input" value="{{ $profileDetail->annual_income }}">
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion-body mb-4 d-grid">
+                            <h4 class="font-serif text-dark mb-3" style="grid-column: 1/-1;"><i class="bi bi-house-door text-pink me-2"></i> Family Details</h4>
+                            <div class="data-item">
+                                <label class="edit-label">Family Type</label>
+                                <select name="family_type" class="form-select premium-input">
+                                    <option value="Nuclear" {{ $profileDetail->family_type == 'Nuclear' ? 'selected' : '' }}>Nuclear</option>
+                                    <option value="Joint" {{ $profileDetail->family_type == 'Joint' ? 'selected' : '' }}>Joint</option>
+                                </select>
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Family Status</label>
+                                <select name="family_status" class="form-select premium-input">
+                                    <option value="Middle Class" {{ $profileDetail->family_status == 'Middle Class' ? 'selected' : '' }}>Middle Class</option>
+                                    <option value="Upper Middle Class" {{ $profileDetail->family_status == 'Upper Middle Class' ? 'selected' : '' }}>Upper Middle Class</option>
+                                    <option value="Rich / Affluent" {{ $profileDetail->family_status == 'Rich / Affluent' ? 'selected' : '' }}>Rich / Affluent</option>
+                                </select>
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Father's Occupation</label>
+                                <input type="text" name="father_occupation" class="form-control premium-input" value="{{ $profileDetail->father_occupation }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Mother's Occupation</label>
+                                <input type="text" name="mother_occupation" class="form-control premium-input" value="{{ $profileDetail->mother_occupation }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">No. of Brothers</label>
+                                <input type="number" name="no_of_brothers" class="form-control premium-input" value="{{ $profileDetail->no_of_brothers }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">No. of Sisters</label>
+                                <input type="number" name="no_of_sisters" class="form-control premium-input" value="{{ $profileDetail->no_of_sisters }}">
+                            </div>
+                        </div>
+
+                        <div class="detail-accordion-body mb-4 d-grid" style="background: rgba(231,84,128,0.03);">
+                            <h4 class="font-serif text-dark mb-3" style="grid-column: 1/-1;"><i class="bi bi-heart text-pink me-2"></i> Partner Preferences</h4>
+                            <div class="data-item">
+                                <label class="edit-label">Min Age</label>
+                                <input type="number" name="partner_min_age" class="form-control premium-input" value="{{ $profileDetail->partner_min_age }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Max Age</label>
+                                <input type="number" name="partner_max_age" class="form-control premium-input" value="{{ $profileDetail->partner_max_age }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Min Height (cm)</label>
+                                <input type="number" name="partner_min_height" class="form-control premium-input" value="{{ $profileDetail->partner_min_height }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Max Height (cm)</label>
+                                <input type="number" name="partner_max_height" class="form-control premium-input" value="{{ $profileDetail->partner_max_height }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Marital Status</label>
+                                <input type="text" name="partner_marital_status" class="form-control premium-input" value="{{ $profileDetail->partner_marital_status }}" placeholder="e.g. Single, Divorced">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Religion</label>
+                                <input type="text" name="partner_religion" class="form-control premium-input" value="{{ $profileDetail->partner_religion }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Caste</label>
+                                <input type="text" name="partner_caste" class="form-control premium-input" value="{{ $profileDetail->partner_caste }}">
+                            </div>
+                            <div class="data-item">
+                                <label class="edit-label">Education</label>
+                                <input type="text" name="partner_education" class="form-control premium-input" value="{{ $profileDetail->partner_education }}">
+                            </div>
+                            <div class="data-item" style="grid-column: span 3;">
+                                <label class="edit-label">Location / Area Preference</label>
+                                <input type="text" name="area_preference" class="form-control premium-input" value="{{ is_array($profileDetail->area_preference) ? implode(', ', $profileDetail->area_preference) : $profileDetail->area_preference }}" placeholder="e.g. Delhi, Mumbai">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <button type="button" class="btn-action-outline text-muted border-secondary" onclick="toggleEditMode({{ $profileDetail->id }}, 'view')">Discard Changes</button>
+                            <button type="submit" class="btn-action-solid"><i class="bi bi-save"></i> Save Profile Updates</button>
+                        </div>
+                    </form>
 
                 </div>
             @endforeach
@@ -1016,7 +1145,7 @@
     // ==========================================
     // DYNAMIC SPLIT PANE SPA CONTROLLER
     // ==========================================
-    function showProfileDetails(profileId, listItemElement) {
+    function showProfileDetails(profileId, listItemElement, mode = 'view') {
         
         // 1. Trigger layout shift by removing full-width class
         const layout = document.getElementById('mainSplitLayout');
@@ -1032,7 +1161,6 @@
         // 3. Add Custom Gradient Active state to clicked item
         if(listItemElement) {
             listItemElement.classList.add('active');
-            
             // Scroll the left sidebar so the active item is in view
             listItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -1042,16 +1170,31 @@
             el.style.display = 'none';
         });
 
-        // 5. Fade in the target detail pane
+        // 5. Show target detail pane and toggle view/edit mode
         const targetDetail = document.getElementById('detail-content-' + profileId);
         if (targetDetail) {
             targetDetail.style.display = 'block';
+            toggleEditMode(profileId, mode);
             
             // Scroll right pane to top
             const container = document.getElementById('detailContainer');
             if (container) {
                 container.scrollTo({ top: 0, behavior: 'smooth' });
             }
+        }
+    }
+
+    // Toggle between View and Edit within the same profile pane
+    function toggleEditMode(profileId, mode) {
+        const viewDiv = document.getElementById('view-mode-' + profileId);
+        const editForm = document.getElementById('edit-mode-' + profileId);
+        
+        if (mode === 'edit') {
+            if(viewDiv) viewDiv.style.display = 'none';
+            if(editForm) editForm.style.display = 'block';
+        } else {
+            if(viewDiv) viewDiv.style.display = 'block';
+            if(editForm) editForm.style.display = 'none';
         }
     }
 
