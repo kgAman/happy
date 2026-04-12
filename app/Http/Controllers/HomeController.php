@@ -184,10 +184,18 @@ class HomeController extends Controller
     }
 public function dashboard()
     {
-        // In a real app, you would fetch user-specific data here
-        // like matches, messages, profile views, etc.
-        
-        return view('pages.dashboard');
+        // Fetch all the necessary data for the Edit Profile dropdowns
+        $Area = \App\Models\Area::all(); 
+        $Caste = \App\Models\Caste::all();
+        $CountryCode = \App\Models\CountryCode::all();
+        $Education = \App\Models\Education::all();
+        $Occupation = \App\Models\Occupation::all();
+        $Gotra = \App\Models\Gotra::all();
+
+        // Pass the data to the user dashboard view
+        return view('users.dashboard', compact(
+            'Area', 'Caste', 'CountryCode', 'Education', 'Occupation', 'Gotra'
+        ));
     }
     /**
      * Show registration page.

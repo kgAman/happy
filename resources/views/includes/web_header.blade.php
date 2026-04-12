@@ -30,49 +30,44 @@
                 </li>
                 
                 @auth
-    <li class="nav-item dropdown ms-lg-3">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
-           data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle me-1"></i> My Account
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
-            
-            {{-- Admin, Developer, and Operator Dashboard Routing Logic --}}
-            @if(auth()->user()->hasAnyRole(['Admin', 'Super Admin', 'Developer', 'Operator']) || auth()->user()->isAdmin())
-                <li>
-                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
-                    </a>
-                </li>
-            @else
-                <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                <li><a class="dropdown-item" href="/profile/edit"><i class="bi bi-person me-2"></i>My Profile</a></li>
-                <li><a class="dropdown-item" href="/matches"><i class="bi bi-heart me-2"></i>My Matches</a></li>
-            @endif
-            
-            <li><hr class="dropdown-divider"></li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="dropdown-item text-danger">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </li>
-@else
-    <li class="nav-item ms-lg-3 mb-2 mb-lg-0 mt-3 mt-lg-0">
-        <a class="nav-link nav-login text-center" href="{{ route('login') }}">
-            Login
-        </a>
-    </li>
-    <li class="nav-item ms-lg-2">
-        <a class="btn btn-primary w-100" href="{{ route('register') }}">
-            Register Free
-        </a>
-    </li>
-@endauth
+                    {{-- Admin/Staff Only Link --}}
+                    @if(auth()->user()->hasAnyRole(['Admin', 'Super Admin', 'Developer', 'Operator']) || auth()->user()->isAdmin())
+                        <li class="nav-item ms-lg-2">
+                            <a class="nav-link fw-bold" style="color: #e75480 !important;" href="{{ route('admin.dashboard') }}">
+                                <i class="bi bi-shield-lock-fill me-1"></i> Admin Dashboard
+                            </a>
+                        </li>
+                    @endif
+                    
+                    {{-- Universal User Dashboard --}}
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" href="/dashboard">
+                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                    {{-- Inline Logout Button --}}
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0 d-flex align-items-center">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0 w-100">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger rounded-pill px-4 fw-semibold w-100">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                @else
+                    {{-- Guest Links --}}
+                    <li class="nav-item ms-lg-3 mb-2 mb-lg-0 mt-3 mt-lg-0">
+                        <a class="nav-link nav-login text-center" href="{{ route('login') }}">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary w-100" href="{{ route('register') }}">
+                            Register Free
+                        </a>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>
@@ -166,6 +161,11 @@
     width: 70%;
 }
 
+/* Hide underline for the explicit pink Admin link to keep it clean */
+.main-navbar .nav-link.text-pink::after {
+    display: none;
+}
+
 /* --- Primary Button --- */
 .main-navbar .btn-primary {
     background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
@@ -201,15 +201,16 @@
     display: none;
 }
 
-/* --- Dropdown --- */
-.dropdown-menu {
-    border-radius: 12px;
-    border: 1px solid rgba(231, 84, 128, 0.1);
+/* --- Logout Button Customization --- */
+.btn-outline-danger {
+    border-color: #ef4444;
+    color: #ef4444;
+    transition: all 0.2s ease;
 }
-
-.dropdown-item:hover {
-    background-color: #fdeff6;
-    color: #e75480;
+.btn-outline-danger:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }
 
 /* --- Mobile --- */
